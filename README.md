@@ -3,7 +3,8 @@ simple API to generate and manage a single survey
 
 
 ## Routes
-- survey/createNew GET
+### Default start routes
+- survey/createNew POST
 	- requires surveyName: string, creatorName: string, endDate:DateString
 	- returns 200 and a creationToken
 - survey/openShare GET
@@ -42,21 +43,21 @@ simple API to generate and manage a single survey
 	- Returns results for each option
 
 ## Database structure
-# Table survey
+### Table survey
 survey_name: string,  
 creator_name: string,  
 created: DateSting, (defaults)  
-endDate: DateString,  
+end_date: DateString,  
 creation_token: Hash,  
 public_token: Hash  
 
-# Table options
+### Table options
 creation_token,  
 option_id: uuid
 option_name: string,  
 content: string,  
 
-# Table sessions
+### Table sessions
 public_token,  
 session_id,  
 option_selection: optionId,  
