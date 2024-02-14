@@ -1,0 +1,23 @@
+{
+	"compilerOptions": {
+		"target": "ESNext",
+		"lib": ["DOM", "ESNext", "DOM.Iterable"],
+		"module": "NodeNext",
+		"outDir": "./dist/",
+		"strict": true,
+		"skipLibCheck": true,
+		"forceConsistentCasingInFileNames": true,
+		"moduleResolution": "NodeNext",
+		"declaration": true,
+		"esModuleInterop": true,
+		"removeComments": false,
+		"rootDirs": [
+			"./",
+		]
+	},
+	"include": [
+		"./*",
+		"./**/*"
+	],
+	
+}
