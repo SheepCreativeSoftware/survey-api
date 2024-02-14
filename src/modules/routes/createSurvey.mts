@@ -2,6 +2,7 @@
 import { addSurveyToDb } from '../database/survey/addSurveyToDb.mjs';
 import { buntstift } from 'buntstift';
 import express from 'express';
+import { expressLogger } from '../misc/expressLogger.mjs';
 import { getToken } from '../misc/createToken.mjs';
 import { statusCode } from '../misc/statusCodes.mjs';
 import { z as zod } from 'zod';
@@ -37,6 +38,7 @@ router.post('/createNew', async (req, res) => {
 		buntstift.verbose(JSON.stringify(response));
 		const creationToken = await createNewSurvey(response);
 		res.status(statusCode.okay.statusCode).send(Object.assign({}, statusCode.okay, { creationToken }));
+		expressLogger('success', req, res);
 	} catch (error) {
 		if(error instanceof Error) buntstift.error(error.message);
 		res.status(statusCode.badRequest.statusCode).send(statusCode.badRequest);
