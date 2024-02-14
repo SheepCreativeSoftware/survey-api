@@ -1,8 +1,5 @@
 import { buntstift } from 'buntstift';
 import { connectDb } from './connectDatabase.mjs';
-import { randomUUID } from 'crypto';
-
-const zero = 0;
 
 const initDatabase = async function() {
 	buntstift.info('Initialize DB');
@@ -16,60 +13,44 @@ const initDatabase = async function() {
 	});
 
 	try {
-		await conn.query(`CREATE TABLE IF NOT EXISTS users (
-			id VARCHAR(36) NOT NULL DEFAULT UUID(),
-			name TINYTEXT NOT NULL,
-			email TINYTEXT NOT NULL,
-			role TINYTEXT NOT NULL
-		)`);
-		buntstift.success('Created users table in DB');
-	} catch (error) {
-		buntstift.error('Failed to create users table in DB');
-		if(error instanceof Error) buntstift.error(error.message);
-	}
-
-	try {
-		const result = await conn.query('SELECT email FROM users WHERE email = (?)', [process.env.SMTP_ADMIN_EMAIL]);
-		if(result.length === zero) {
-			await conn.query('INSERT INTO users (id, name, email, role) VALUES (?, ?, ?, ?)', [
-				randomUUID(),
-				'Admin',
-				process.env.SMTP_ADMIN_EMAIL,
-				'admin',
-			]);
-			buntstift.success('Created Admin user in DB');
-		}
-	} catch (error) {
-		buntstift.error('Failed to create admin user in DB');
-		if(error instanceof Error) buntstift.error(error.message);
-	}
-
-	try {
-		await conn.query(`CREATE TABLE IF NOT EXISTS meta (
-			id VARCHAR(36) NOT NULL DEFAULT UUID(),
-			page TEXT NOT NULL,
-			title TEXT NULL DEFAULT NULL,
-			keywords TEXT NULL DEFAULT NULL,
-			description TEXT NULL DEFAULT NULL
-		)`);
-		buntstift.success('Created meta data table in DB');
-	} catch (error) {
-		buntstift.error('Failed to create meta data table in DB');
-		if(error instanceof Error) buntstift.error(error.message);
-	}
-
-	try {
-		await conn.query(`CREATE TABLE IF NOT EXISTS content (
-			id VARCHAR(36) NOT NULL DEFAULT UUID(),
-			page TEXT NOT NULL,
-			type TINYTEXT NOT NULL,
-			content TEXT NOT NULL,
+		await conn.query(`CREATE TABLE IF NOT EXISTS survey (
+			survey_name TINYTEXT NOT NULL,
+			creator_name TINYTEXT NOT NULL,
 			created DATETIME NULL DEFAULT current_timestamp(),
-			updated DATETIME NULL DEFAULT NULL ON UPDATE current_timestamp()
+			end_date DATETIME NOT NULL,
+			creation_token TINYTEXT NOT NULL,
+			public_token TINYTEXT NOT NULL
 		)`);
-		buntstift.success('Created meta data table in DB');
+		buntstift.success('Created survey table in DB');
 	} catch (error) {
-		buntstift.error('Failed to create meta data table in DB');
+		buntstift.error('Failed to create survey table in DB');
+		if(error instanceof Error) buntstift.error(error.message);
+	}
+
+	try {
+		await conn.query(`CREATE TABLE IF NOT EXISTS options (
+			option_id VARCHAR(36) NOT NULL DEFAULT UUID(),
+			creation_token TINYTEXT NOT NULL,
+			option_name TINYTEXT NOT NULL,
+			content TEXT NOT NULL
+		)`);
+		buntstift.success('Created options data table in DB');
+	} catch (error) {
+		buntstift.error('Failed to create options data table in DB');
+		if(error instanceof Error) buntstift.error(error.message);
+	}
+
+	try {
+		await conn.query(`CREATE TABLE IF NOT EXISTS sessions (
+			public_token TINYTEXT NOT NULL,
+			session_id VARCHAR(36) NOT NULL DEFAULT UUID(),
+			option_id_selected VARCHAR(36) NOT NULL,
+			ip_address TINYTEXT NOT NULL,
+			submited DATETIME NULL DEFAULT current_timestamp()
+		)`);
+		buntstift.success('Created sessions data table in DB');
+	} catch (error) {
+		buntstift.error('Failed to create sessions data table in DB');
 		if(error instanceof Error) buntstift.error(error.message);
 	}
 
