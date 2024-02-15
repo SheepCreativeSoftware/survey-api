@@ -2,15 +2,27 @@
 
 const statusCode = {
 	okay: {
-		status: 'ok',
+		status: 'OK',
 		statusCode: 200,
+	},
+	created: {
+		status: 'Created',
+		statusCode: 201,
+	},
+	badRequest: {
+		status: 'Bad request',
+		statusCode: 400,
+	},
+	forbidden: {
+		status: 'Forbidden',
+		statusCode: 400,
 	},
 	notFound: {
 		status: 'Not found',
 		statusCode: 404,
 	},
-	badRequest: {
-		status: 'Bad request',
+	internalError: {
+		status: 'Internal Server Error',
 		statusCode: 500,
 	},
 };

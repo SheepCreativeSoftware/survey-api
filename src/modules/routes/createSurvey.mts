@@ -1,12 +1,11 @@
-
 import { addSurveyToDb } from '../database/survey/addSurveyToDb.mjs';
 import { buntstift } from 'buntstift';
 import express from 'express';
 import { expressLogger } from '../misc/expressLogger.mjs';
 import { getToken } from '../misc/createToken.mjs';
+import { handleErrorResponse } from '../misc/handleErrorResponse.mjs';
 import { statusCode } from '../misc/statusCodes.mjs';
 import { z as zod } from 'zod';
-
 
 // eslint-disable-next-line new-cap
 const router = express.Router();
@@ -32,16 +31,16 @@ const createNewSurvey = async (response: CreateSurvey) => {
 };
 
 
+
 router.post('/createNew', async (req, res) => {
 	try {
 		const response = createSurveyRequest.parse(req.body);
 		buntstift.verbose(JSON.stringify(response));
 		const creationToken = await createNewSurvey(response);
-		res.status(statusCode.okay.statusCode).send(Object.assign({}, statusCode.okay, { creationToken }));
+		res.status(statusCode.created.statusCode).send(Object.assign({}, statusCode.created, { creationToken }));
 		expressLogger('success', req, res);
 	} catch (error) {
-		if(error instanceof Error) buntstift.error(error.message);
-		res.status(statusCode.badRequest.statusCode).send(statusCode.badRequest);
+		handleErrorResponse(error, res);
 	}
 });
 
