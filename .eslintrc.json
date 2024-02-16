@@ -180,6 +180,7 @@
 		"no-magic-numbers": [
 			"error",
 			{
+				"ignore": [0, 1],
 				"ignoreArrayIndexes": true,
 				"ignoreDefaultValues": true
 			}

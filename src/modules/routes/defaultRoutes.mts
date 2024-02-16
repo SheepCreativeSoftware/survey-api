@@ -1,5 +1,4 @@
 import { addSurveyToDb } from '../database/survey/addSurveyToDb.mjs';
-import { buntstift } from 'buntstift';
 import express from 'express';
 import { getToken } from '../misc/createToken.mjs';
 import { handleErrorResponse } from '../misc/handleErrorResponse.mjs';
