@@ -4,6 +4,8 @@ simple API to generate and manage a single survey
 
 ## Routes
 ### Default start routes
+- survey/startSession
+	- returns csrf token
 - survey/createNew POST
 	- requires surveyName: string, creatorName: string, endDate:DateString
 	- returns 200 and a creationToken
@@ -45,20 +47,22 @@ simple API to generate and manage a single survey
 ## Database structure
 ### Table survey
 survey_name: string,  
+survey_description: string,  
 creator_name: string,  
 created: DateSting, (defaults)  
 end_date: DateString,  
 creation_token: Hash,  
-public_token: Hash  
+public_token: Hash,  
+survey_id: id,  
 
 ### Table options
-creation_token,  
+survey_id: id,  
 option_id: uuid
 option_name: string,  
 content: string,  
 
 ### Table sessions
-public_token,  
+survey_id: id,  
 session_id,  
 option_selection: optionId,  
 ip_address: string,  

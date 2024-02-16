@@ -15,7 +15,7 @@ const statusCode = {
 	},
 	forbidden: {
 		status: 'Forbidden',
-		statusCode: 400,
+		statusCode: 403,
 	},
 	notFound: {
 		status: 'Not found',

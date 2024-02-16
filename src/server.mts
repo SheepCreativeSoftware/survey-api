@@ -1,10 +1,9 @@
-// eslint-disable-next-line no-shadow
-import { Request, Response } from 'express';
+import { clientErrorHandler, errorHandler, notFoundHandler } from './modules/misc/errorHandlers.mjs';
 import { buntstift } from 'buntstift';
-import { createSurvey } from './modules/routes/createSurvey.mjs';
+import cookieParser from 'cookie-parser';
+import { defaultRoutes } from './modules/routes/defaultRoutes.mjs';
+import { doubleCsrf } from 'csrf-csrf';
 import express from 'express';
-import { expressLogger } from './modules/misc/expressLogger.mjs';
-import { statusCode } from './modules/misc/statusCodes.mjs';
 
 
 const startServer = () => {
@@ -13,24 +12,38 @@ const startServer = () => {
 	// Setup body parser for specific types
 	app.use(express.json());
 
+	// Setup basic middlewares
+	if(typeof process.env.SESSION_SECRET === 'undefined') throw new Error('Missing Session Secret');
 	if(process.env.NODE_ENV === 'production') {
 		// Trust first proxy (ngnix)
 		app.set('trust proxy', true);
 	}
+	app.use(cookieParser());
 
-	// Setup Routes
-	app.use('/api/v1', createSurvey);
-
-	// Handle Error routes
-	app.use(function(req, res) {
-		res.status(statusCode.notFound.statusCode).send(statusCode.notFound);
+	const csrfProtection = doubleCsrf({
+		cookieName: `${process.env.HOST}.x-csrf-token`,
+		cookieOptions: {
+			maxAge: 600_000,
+			path: '/',
+			sameSite: 'lax',
+			secure: true,
+		},
+		getSecret: () => process.env.SESSION_SECRET || 'WillFailOnUndefined',
+		getTokenFromRequest: (req) => req.headers['x-csrf-token'],
+		ignoredMethods: ['GET', 'HEAD', 'OPTIONS'],
+		size: 64,
 	});
 
-	app.use(function(err: Error, req: Request, res: Response) {
-		expressLogger('error', req, res);
-		if(err.stack) buntstift.error(err.stack);
-		res.status(statusCode.badRequest.statusCode).send(statusCode.badRequest);
-	});
+	// Setup CSRF protection
+	app.use(csrfProtection.doubleCsrfProtection);
+
+	// Setup Protected Routes
+	app.use('/api/v1', defaultRoutes);
+
+	// Handle errors
+	app.use(notFoundHandler);
+	app.use(clientErrorHandler);
+	app.use(errorHandler);
 
 	// Start Server
 	app.listen(process.env.PORT).on('listening', () => {

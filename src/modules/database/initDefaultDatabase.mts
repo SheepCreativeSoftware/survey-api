@@ -14,7 +14,9 @@ const initDatabase = async function() {
 
 	try {
 		await conn.query(`CREATE TABLE IF NOT EXISTS survey (
+			survey_id INT NOT NULL primary key AUTO_INCREMENT,
 			survey_name TINYTEXT NOT NULL,
+			survey_description TEXT NOT NULL,
 			creator_name TINYTEXT NOT NULL,
 			created DATETIME NULL DEFAULT current_timestamp(),
 			end_date DATETIME NOT NULL,
@@ -29,8 +31,8 @@ const initDatabase = async function() {
 
 	try {
 		await conn.query(`CREATE TABLE IF NOT EXISTS options (
+			survey_id INT NOT NULL,
 			option_id VARCHAR(36) NOT NULL DEFAULT UUID(),
-			creation_token TINYTEXT NOT NULL,
 			option_name TINYTEXT NOT NULL,
 			content TEXT NOT NULL
 		)`);
@@ -42,7 +44,7 @@ const initDatabase = async function() {
 
 	try {
 		await conn.query(`CREATE TABLE IF NOT EXISTS sessions (
-			public_token TINYTEXT NOT NULL,
+			survey_id INT NOT NULL,
 			session_id VARCHAR(36) NOT NULL DEFAULT UUID(),
 			option_id_selected VARCHAR(36) NOT NULL,
 			ip_address TINYTEXT NOT NULL,
