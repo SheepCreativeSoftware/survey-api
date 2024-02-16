@@ -4,8 +4,9 @@ import express from 'express';
 import { expressLogger } from '../misc/expressLogger.mjs';
 import { getToken } from '../misc/createToken.mjs';
 import { handleErrorResponse } from '../misc/handleErrorResponse.mjs';
-import { statusCode } from '../misc/statusCodes.mjs';
+import { handleSuccessResponse } from '../misc/handleSuccessResponse.mjs';
 import { z as zod } from 'zod';
+
 
 // eslint-disable-next-line new-cap
 const router = express.Router();
@@ -37,7 +38,7 @@ router.post('/createNew', async (req, res) => {
 		const response = createSurveyRequest.parse(req.body);
 		buntstift.verbose(JSON.stringify(response));
 		const creationToken = await createNewSurvey(response);
-		res.status(statusCode.created.statusCode).send(Object.assign({}, statusCode.created, { creationToken }));
+		handleSuccessResponse({ creationToken }, res);
 		expressLogger('success', req, res);
 	} catch (error) {
 		handleErrorResponse(error, res);
