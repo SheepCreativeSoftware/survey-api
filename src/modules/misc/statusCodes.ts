@@ -1,6 +1,17 @@
 /* eslint-disable sort-keys */
 
-const statusCode = {
+type StatusObject = {
+	status: string,
+	statusCode: number,
+}
+
+type StatusCodes = 'okay' | 'created' | 'badRequest' | 'forbidden' | 'notFound' | 'internalError'
+
+type StatusCodeObject = {
+	[key in StatusCodes]: StatusObject
+}
+
+const statusCode: StatusCodeObject = {
 	okay: {
 		status: 'OK',
 		statusCode: 200,
@@ -27,4 +38,4 @@ const statusCode = {
 	},
 };
 
-export { statusCode };
+export { StatusCodeObject, StatusObject, statusCode };

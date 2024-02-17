@@ -6,7 +6,8 @@
   "scripts": {
     "build": "tsc -b",
     "start": "tsc-watch --noClear -b --onSuccess \"node --env-file=.env dist/app.js\"",
-    "test": "jest"
+    "test": "jest --silent",
+    "test-detail": "jest"
   },
   "repository": {
     "type": "git",

@@ -5,6 +5,8 @@ import cors from 'cors';
 import { csrfProtection } from './modules/protection/csrfProtection';
 import { defaultRoutes } from './modules/routes/defaultRoutes';
 import express from 'express';
+import { optionsRoutes } from './modules/routes/optionsRoutes';
+import { surveyRoutes } from './modules/routes/surveyRoutes';
 
 const app = express();
 
@@ -20,11 +22,15 @@ const startServer = () => {
 	}
 
 	// Setup protection
-	app.use(cors());
+	app.use(cors({
+		origin: process.env.URL,
+	}));
 	app.use(csrfProtection.doubleCsrfProtection);
 
 	// Setup Protected Routes
-	app.use('/api/v1', defaultRoutes);
+	app.use('/api/v1/survey', defaultRoutes);
+	app.use('/api/v1/survey', surveyRoutes);
+	app.use('/api/v1/manage-survey', optionsRoutes);
 
 	// Handle errors
 	app.use(notFoundHandler);

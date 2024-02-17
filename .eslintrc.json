@@ -368,7 +368,7 @@
 		],
 		"dot-location": [
 			"error",
-			"object"
+			"property"
 		],
 		"eol-last": [
 			"error",

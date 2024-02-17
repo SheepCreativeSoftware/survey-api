@@ -1,11 +1,16 @@
 // eslint-disable-next-line no-shadow
 import { Request, Response } from 'express';
+import { statusCode, StatusObject } from '../misc/statusCodes';
 import { expressLogger } from '../misc/expressLogger';
-import { statusCode } from '../misc/statusCodes';
 
-const handleSuccessResponse = (req: Request, res: Response, responseObject: object) => {
-	res.status(statusCode.created.statusCode).send(Object.assign({}, statusCode.created, responseObject));
-	expressLogger('success', req, res);
+const handleResponse = (statusObj: StatusObject) => {
+	return (req: Request, res: Response, responseObject: object) => {
+		res.status(statusObj.statusCode).send(Object.assign({}, statusObj, responseObject));
+		expressLogger('success', req, res);
+	};
 };
 
-export { handleSuccessResponse };
+const handleSuccessResponse = handleResponse(statusCode.okay);
+const handleCreationResponse = handleResponse(statusCode.created);
+
+export { handleSuccessResponse, handleCreationResponse };

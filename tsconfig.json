@@ -14,7 +14,7 @@
 	},
 	"include": [
 		"src/**/*"
-, "__tests__/server.test.ts"	],
+, "__tests__/sessionStart.test.ts"	],
 	"exclude": [
 		"src/**/*.test.ts",
 		"__tests__"

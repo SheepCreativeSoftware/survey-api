@@ -60,10 +60,16 @@ const getConnection = () => {
 	return reconnectDb();
 };
 
+const closeConnection = async () => {
+	buntstift.verbose('Close DB connection');
+	await conn?.end();
+	if(timeoutHandler !== null) clearTimeout(timeoutHandler);
+};
+
 
 process.on('exit', () => {
 	conn?.destroy();
 	buntstift.verbose('Destroy DB connection');
 });
 
-export { connectDb, getConnection };
+export { connectDb, closeConnection, getConnection };
