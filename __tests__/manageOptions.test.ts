@@ -86,7 +86,7 @@ test('Returns the previously added option', async () => {
 	expect(response.body.content).toBe('Ist diese Option gut?');
 });
 
-test('Updates a option', async () => {
+test('Updates a option and returns OK', async () => {
 	const response = await request(app)
 		.post('/api/v1/manage-survey/updateOption')
 		.set('Accept', 'application/json')
@@ -120,7 +120,7 @@ test('Returns the previously updated option', async () => {
 	expect(response.body.content).toBe('Ist diese Option nicht gut?');
 });
 
-test('Updates a option', async () => {
+test('Removes a option and returns OK', async () => {
 	const response = await request(app)
 		.post('/api/v1/manage-survey/deleteOption')
 		.set('Accept', 'application/json')

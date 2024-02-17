@@ -37,6 +37,7 @@ beforeAll(async () => {
 	expect(response.statusCode).toBe(201);
 	expect(response.body.creationToken).toBeDefined();
 	creationToken = response.body.creationToken;
+
 	await request(app)
 		.post('/api/v1/manage-survey/addOption')
 		.set('Accept', 'application/json')
@@ -47,6 +48,7 @@ beforeAll(async () => {
 			creationToken,
 			optionName: 'Fangfrage',
 		});
+
 	await request(app)
 		.post('/api/v1/manage-survey/addOption')
 		.set('Accept', 'application/json')
@@ -70,7 +72,7 @@ afterAll(async () => {
 	await closeConnection();
 });
 
-test('Returns the previously added options', async () => {
+test('Returns the previously added options as an array', async () => {
 	const response = await request(app)
 		.get('/api/v1/manage-survey/getAllOptions')
 		.query({ creationToken })
@@ -80,6 +82,7 @@ test('Returns the previously added options', async () => {
 	expect(response.header['content-type']).toMatch(/json/);
 	expect(response.body.status).toEqual('OK');
 	expect(response.body.statusCode).toEqual(200);
+
 	for(const option of response.body.options) {
 		expect(option.content).toBe('Ist diese Option gut?');
 		expect(option.optionName).toBe('Fangfrage');
