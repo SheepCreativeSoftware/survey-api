@@ -35,9 +35,21 @@ const getSurveyIdFromDb = async (creationToken: string) => {
 	return surveyId;
 };
 
+const getPublicToken = zod.object({
+	publicToken: zod.string(),
+});
+
+const getPublicTokenFromDb = async (creationToken: string) => {
+	const conn = await getConnection();
+	const response = await conn.query('SELECT public_token FROM survey WHERE creation_token = ?', [creationToken]);
+	const converted = keysToCamelCase(response[0]);
+	const { publicToken } = getPublicToken.parse(converted);
+	return publicToken;
+};
+
 const removeSurveyFromDb = async (creationToken: string) => {
 	const conn = await getConnection();
 	await conn.query('DELETE FROM survey WHERE creation_token=?', [creationToken]);
 };
 
-export { addSurveyToDb, getSurveyIdFromDb, removeSurveyFromDb };
+export { addSurveyToDb, getPublicTokenFromDb, getSurveyIdFromDb, removeSurveyFromDb };

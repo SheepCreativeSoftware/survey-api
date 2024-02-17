@@ -18,32 +18,32 @@ simple API to generate and manage a single survey
 	- requires creationToken,
 	- returns OK
 
-### Manage Survey
+### Manage Survey (Requires creationToken)
 - manage-survey/getOption GET
 	- Requires creationToken, optionId: number,
-	- returns 200 and optionId: number, optionName: string, content: string,
+	- returns optionId: number, optionName: string, content: string,
 - manage-survey/getAllOptions GET
 	- Requires creationToken,
-	- returns 200 and and array with: optionId: number, optionName: string, content: string,
+	- returns an array with: optionId: number, optionName: string, content: string,
 - manage-survey/getShareLink GET
 	- Requires creationToken,
-	- returns 200 and link with publicToken
+	- returns shareLink with publicToken
 
 - manage-survey/addOption POST
 	- Requires creationToken, optionName: string, content: string, 
-	- returns 200 and optionId:number if added otherwise failed
+	- returns optionId:number
 - manage-survey/updateOption POST
 	- Requires creationToken, optionId: number, optionName: string, content: string, 
-	- returns 200 if updated otherwise failed
+	- returns OK
 - manage-survey/deleteOption POST
 	- Requires creationToken, optionId: number,
-	- returns 200 if removed otherwise failed
+	- returns OK
 
 
 ### Answer (Session)
 - answer-survey/finishSurvey POST
 	- Requires publicToken, sessionId, optionSelection: optionId,
-	- Store IP-Address
+	- Store PseudoSession
 
 ### Results
 - result-survey/getResults GET

@@ -24,7 +24,7 @@ const openShareParams = zod.object({
 
 router.get('/openShare', (req, res) => {
 	try {
-		const { publicToken } = openShareParams.parse(req.params);
+		const { publicToken } = openShareParams.parse(req.query);
 
 		// TODO: Return full survey with options
 		handleSuccessResponse(req, res, { });

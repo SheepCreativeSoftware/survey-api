@@ -13,7 +13,7 @@ const addOptionToDb = async (creationToken: string, optionName: string, content:
 	const surveyId = await getSurveyIdFromDb(creationToken);
 	await conn.query(`INSERT INTO options
 	(survey_id, option_name, content, option_id)
-	VALUES (?, ?, ?, ?, ?, ?)`, [
+	VALUES (?, ?, ?, ?)`, [
 		surveyId,
 		optionName,
 		content,

@@ -1,5 +1,5 @@
 /* eslint-disable no-magic-numbers */
-import { closeConnection, connectDb, getConnection } from '../src/modules/database/connectDatabase';
+import { closeConnection, connectDb } from '../src/modules/database/connectDatabase';
 import request from 'supertest';
 import { startServer } from '../src/server';
 
@@ -20,8 +20,6 @@ beforeAll(async () => {
 
 afterAll(async () => {
 	server.close();
-	const conn = await getConnection();
-	await conn.query('DELETE FROM survey WHERE creation_token=?', [creationToken]);
 	await closeConnection();
 });
 
