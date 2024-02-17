@@ -1,9 +1,11 @@
-import { clientErrorHandler, errorHandler, notFoundHandler } from './modules/misc/errorHandlers.js';
+import { clientErrorHandler, errorHandler, notFoundHandler } from './modules/handler/errorHandlers.js';
 import { buntstift } from 'buntstift';
 import cookieParser from 'cookie-parser';
+import cors from 'cors';
+import { csrfProtection } from './modules/protection/csrfProtection.js';
 import { defaultRoutes } from './modules/routes/defaultRoutes.js';
-import { doubleCsrf } from 'csrf-csrf';
 import express from 'express';
+
 
 
 const startServer = () => {
@@ -14,27 +16,13 @@ const startServer = () => {
 	app.use(cookieParser());
 
 	// Setup basic middlewares
-	if(typeof process.env.SESSION_SECRET === 'undefined') throw new Error('Missing Session Secret');
 	if(process.env.NODE_ENV === 'production') {
 		// Trust first proxy (ngnix)
 		app.set('trust proxy', true);
 	}
 
-	const csrfProtection = doubleCsrf({
-		cookieName: `${process.env.HOST}.x-csrf-token`,
-		cookieOptions: {
-			maxAge: 600_000,
-			path: '/',
-			sameSite: 'lax',
-			secure: true,
-		},
-		getSecret: () => process.env.SESSION_SECRET || 'WillFailOnUndefined',
-		getTokenFromRequest: (req) => req.headers['x-csrf-token'],
-		ignoredMethods: ['GET', 'HEAD', 'OPTIONS'],
-		size: 64,
-	});
-
-	// Setup CSRF protection
+	// Setup protection
+	app.use(cors());
 	app.use(csrfProtection.doubleCsrfProtection);
 
 	// Setup Protected Routes

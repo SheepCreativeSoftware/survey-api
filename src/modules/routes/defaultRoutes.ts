@@ -1,8 +1,8 @@
 import { addSurveyToDb } from '../database/survey/addSurveyToDb.js';
 import express from 'express';
 import { getToken } from '../misc/createToken.js';
-import { handleErrorResponse } from '../misc/handleErrorResponse.js';
-import { handleSuccessResponse } from '../misc/handleSuccessResponse.js';
+import { handleErrorResponse } from '../handler/handleErrorResponse.js';
+import { handleSuccessResponse } from '../handler/handleSuccessResponse.js';
 import { z as zod } from 'zod';
 
 
