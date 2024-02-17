@@ -1,8 +1,8 @@
-import { addSurveyToDb } from '../database/survey/addSurveyToDb.mjs';
+import { addSurveyToDb } from '../database/survey/addSurveyToDb.js';
 import express from 'express';
-import { getToken } from '../misc/createToken.mjs';
-import { handleErrorResponse } from '../misc/handleErrorResponse.mjs';
-import { handleSuccessResponse } from '../misc/handleSuccessResponse.mjs';
+import { getToken } from '../misc/createToken.js';
+import { handleErrorResponse } from '../misc/handleErrorResponse.js';
+import { handleSuccessResponse } from '../misc/handleSuccessResponse.js';
 import { z as zod } from 'zod';
 
 
@@ -19,7 +19,6 @@ router.get('/startSession', (req, res) => {
 		handleErrorResponse(req, res, error);
 	}
 });
-
 
 
 const createSurveyRequest = zod.object({
@@ -43,7 +42,6 @@ const createNewSurvey = async (response: CreateSurvey) => {
 	});
 	return creationToken;
 };
-
 
 
 router.post('/createNew', async (req, res) => {

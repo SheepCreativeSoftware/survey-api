@@ -1,7 +1,7 @@
-import { clientErrorHandler, errorHandler, notFoundHandler } from './modules/misc/errorHandlers.mjs';
+import { clientErrorHandler, errorHandler, notFoundHandler } from './modules/misc/errorHandlers.js';
 import { buntstift } from 'buntstift';
 import cookieParser from 'cookie-parser';
-import { defaultRoutes } from './modules/routes/defaultRoutes.mjs';
+import { defaultRoutes } from './modules/routes/defaultRoutes.js';
 import { doubleCsrf } from 'csrf-csrf';
 import express from 'express';
 
@@ -9,8 +9,9 @@ import express from 'express';
 const startServer = () => {
 	const app = express();
 
-	// Setup body parser for specific types
+	// Setup parsers for specific types
 	app.use(express.json());
+	app.use(cookieParser());
 
 	// Setup basic middlewares
 	if(typeof process.env.SESSION_SECRET === 'undefined') throw new Error('Missing Session Secret');
@@ -18,7 +19,6 @@ const startServer = () => {
 		// Trust first proxy (ngnix)
 		app.set('trust proxy', true);
 	}
-	app.use(cookieParser());
 
 	const csrfProtection = doubleCsrf({
 		cookieName: `${process.env.HOST}.x-csrf-token`,

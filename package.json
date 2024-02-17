@@ -2,11 +2,11 @@
   "name": "survey-api",
   "version": "0.0.1",
   "description": "Simple API for a small survey app",
-  "main": "dist/app.mjs",
+  "main": "dist/app.js",
   "scripts": {
     "build": "tsc -b",
-    "start": "tsc-watch --noClear -b --onSuccess \"node --env-file=.env dist/app.mjs\"",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "tsc-watch --noClear -b --onSuccess \"node --env-file=.env dist/app.js\"",
+    "test": "jest"
   },
   "repository": {
     "type": "git",
@@ -32,6 +32,8 @@
     "@typescript-eslint/eslint-plugin": "^7.0.1",
     "@typescript-eslint/parser": "^7.0.1",
     "eslint": "^8.56.0",
+    "jest": "^29.7.0",
+    "supertest": "^6.3.4",
     "tsc-watch": "^6.0.4",
     "typescript": "^5.3.3"
   },

@@ -1,4 +1,4 @@
-import { getConnection } from '../connectDatabase.mjs';
+import { getConnection } from '../connectDatabase.js';
 
 
 // eslint-disable-next-line id-length
