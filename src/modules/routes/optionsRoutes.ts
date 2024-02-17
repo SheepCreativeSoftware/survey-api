@@ -39,7 +39,7 @@ router.get('/getAllOptions', async (req, res) => {
 	try {
 		const { creationToken } = creationTokenParam.parse(req.query);
 		const options = await getAllOptionFromDb(creationToken);
-		handleSuccessResponse(req, res, options);
+		handleSuccessResponse(req, res, { options });
 	} catch (error) {
 		handleErrorResponse(req, res, error);
 	}
