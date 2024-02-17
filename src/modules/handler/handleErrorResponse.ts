@@ -1,8 +1,8 @@
 // eslint-disable-next-line no-shadow
 import { Request, Response } from 'express';
 import { buntstift } from 'buntstift';
-import { expressLogger } from '../misc/expressLogger.js';
-import { statusCode } from '../misc/statusCodes.js';
+import { expressLogger } from '../misc/expressLogger';
+import { statusCode } from '../misc/statusCodes';
 import { ZodError } from 'zod';
 
 const handleErrorResponse = (req: Request, res: Response, error: unknown) => {

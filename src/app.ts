@@ -1,7 +1,7 @@
 
 import { buntstift } from 'buntstift';
-import { initDatabase } from './modules/database/initDefaultDatabase.js';
-import { startServer } from './server.js';
+import { initDatabase } from './modules/database/initDefaultDatabase';
+import { startServer } from './server';
 
 
 if(process.env.NODE_ENV === 'development') buntstift.configure(buntstift.getConfiguration().withVerboseMode(true));

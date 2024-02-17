@@ -1,16 +1,14 @@
-import { clientErrorHandler, errorHandler, notFoundHandler } from './modules/handler/errorHandlers.js';
+import { clientErrorHandler, errorHandler, notFoundHandler } from './modules/handler/errorHandlers';
 import { buntstift } from 'buntstift';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
-import { csrfProtection } from './modules/protection/csrfProtection.js';
-import { defaultRoutes } from './modules/routes/defaultRoutes.js';
+import { csrfProtection } from './modules/protection/csrfProtection';
+import { defaultRoutes } from './modules/routes/defaultRoutes';
 import express from 'express';
 
-
+const app = express();
 
 const startServer = () => {
-	const app = express();
-
 	// Setup parsers for specific types
 	app.use(express.json());
 	app.use(cookieParser());
@@ -34,11 +32,12 @@ const startServer = () => {
 	app.use(errorHandler);
 
 	// Start Server
-	app.listen(process.env.PORT).on('listening', () => {
+	const server = app.listen(process.env.PORT).on('listening', () => {
 		buntstift.success(`Server started and is listening on Port ${process.env.PORT}`);
 	}).on('error', (error) => {
 		buntstift.error(`Server failed because of ${error.message}`);
 	});
+	return { app, server };
 };
 
 export { startServer };

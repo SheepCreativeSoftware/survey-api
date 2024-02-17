@@ -10,13 +10,13 @@
 		"moduleResolution": "NodeNext",
 		"declaration": true,
 		"removeComments": false,
-		"rootDirs": [
-			"./",
-		]
+		"esModuleInterop": true,
 	},
 	"include": [
-		"./*",
-		"./**/*"
-	],
-	
+		"src/**/*"
+, "__tests__/server.test.ts"	],
+	"exclude": [
+		"src/**/*.test.ts",
+		"__tests__"
+	]
 }

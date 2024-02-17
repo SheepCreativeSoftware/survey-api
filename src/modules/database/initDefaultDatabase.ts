@@ -1,5 +1,5 @@
 import { buntstift } from 'buntstift';
-import { connectDb } from './connectDatabase.js';
+import { connectDb } from './connectDatabase';
 
 const initDatabase = async function() {
 	buntstift.info('Initialize DB');
