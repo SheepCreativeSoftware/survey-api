@@ -19,13 +19,16 @@ Later on a publicToken is used to open a existing survey and answer it.
 	- Failes if IP-Address is known
 
 - survey/createNew POST
-	- requires surveyName: string, surveyDescription:string, creatorName: string, endDate: DateString
+	- requires surveyName: string, surveyDescription:string, choicesType:string (multiple, single) creatorName: string, endDate: DateString
 	- returns a creationToken (Required for creation POSTs)
 - survey/removeSurvey POST
 	- requires creationToken,
 	- returns OK
 
 ### Manage Survey (Requires creationToken)
+- manage-survey/getFullSurvey GET
+	- Requires creationToken  
+	- Returns sessionId, surveyName: string, surveyDescription:string, creatorName: string, endDate: DateString, optionsArray
 - manage-survey/getOption GET
 	- Requires creationToken, optionId: number,
 	- returns optionId: number, optionName: string, content: string,
@@ -63,6 +66,7 @@ survey_name: string,
 survey_description: string,  
 creator_name: string,  
 created: DateSting, (defaults)  
+choices_type: string,  
 end_date: DateString,  
 creation_token: Hash,  
 public_token: Hash,  

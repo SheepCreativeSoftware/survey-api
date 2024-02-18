@@ -23,6 +23,7 @@ beforeAll(async () => {
 		.set('x-csrf-token', CSRFToken)
 		.set('cookie', cookie)
 		.send({
+			choicesType: 'single',
 			creatorName: 'My Name',
 			endDate: '2025-01-01T00:00:00Z',
 			surveyDescription: 'Test Survey',

@@ -37,6 +37,14 @@ test('Database survey should now have a certain structure', async () => {
 		{
 			Default: null,
 			Extra: '',
+			Field: 'choices_type',
+			Key: '',
+			Null: 'NO',
+			Type: 'tinytext',
+		},
+		{
+			Default: null,
+			Extra: '',
 			Field: 'creator_name',
 			Key: '',
 			Null: 'NO',

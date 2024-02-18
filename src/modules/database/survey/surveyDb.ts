@@ -2,7 +2,8 @@ import { getConnection } from '../connectDatabase';
 import { keysToCamelCase } from '../../misc/convertToCamel';
 import { z as zod } from 'zod';
 
-const addSurveyToDb = async ({ creationToken, creatorName, endDate, publicToken, surveyName, surveyDescription }: {
+const addSurveyToDb = async ({ choicesType, creationToken, creatorName, endDate, publicToken, surveyName, surveyDescription }: {
+	choicesType: string,
 	creationToken: string,
 	creatorName: string,
 	endDate: Date,
@@ -12,8 +13,9 @@ const addSurveyToDb = async ({ creationToken, creatorName, endDate, publicToken,
 }) => {
 	const conn = await getConnection();
 	await conn.query(`INSERT INTO survey
-	(creation_token, creator_name, end_date, public_token, survey_name, survey_description)
-	VALUES (?, ?, ?, ?, ?, ?)`, [
+	(choices_type, creation_token, creator_name, end_date, public_token, survey_name, survey_description)
+	VALUES (?, ?, ?, ?, ?, ?, ?)`, [
+		choicesType,
 		creationToken,
 		creatorName,
 		endDate,

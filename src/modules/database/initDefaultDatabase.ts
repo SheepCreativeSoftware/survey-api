@@ -17,6 +17,7 @@ const initDatabase = async function() {
 			survey_id INT NOT NULL primary key AUTO_INCREMENT,
 			survey_name TINYTEXT NOT NULL,
 			survey_description TEXT NOT NULL,
+			choices_type TINYTEXT NOT NULL,
 			creator_name TINYTEXT NOT NULL,
 			created DATETIME NULL DEFAULT current_timestamp(),
 			end_date DATETIME NOT NULL,

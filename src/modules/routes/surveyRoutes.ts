@@ -14,7 +14,13 @@ const router = express.Router();
  * Creates a new Survey which can be referenced to for options etc.
  */
 
+const ChoicesTypeSchema = zod.union([
+	zod.literal('single'),
+	zod.literal('multiple'),
+]);
+
 const createSurveyRequest = zod.object({
+	choicesType: ChoicesTypeSchema,
 	creatorName: zod.string(),
 	endDate: zod.string().datetime(),
 	surveyDescription: zod.string(),
@@ -26,6 +32,7 @@ type CreateSurvey = zod.infer<typeof createSurveyRequest>;
 const createNewSurvey = async (response: CreateSurvey) => {
 	const creationToken = getToken();
 	await addSurveyToDb({
+		choicesType: response.choicesType,
 		creationToken,
 		creatorName: response.creatorName,
 		endDate: new Date(response.endDate),

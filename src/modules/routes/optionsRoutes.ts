@@ -76,7 +76,7 @@ router.post('/addOption', async (req, res) => {
 	try {
 		const { content, creationToken, optionName } = addOptionRequest.parse(req.body);
 
-		// TODO: Content should be checked with domify
+		// TODO: Content should be checked with dompurify
 		const optionId = await addOptionToDb(creationToken, optionName, content);
 		handleCreationResponse(req, res, { optionId });
 	} catch (error) {
@@ -99,7 +99,7 @@ router.post('/updateOption', async (req, res) => {
 	try {
 		const { content, creationToken, optionId, optionName } = updateOptionRequest.parse(req.body);
 
-		// TODO: Content should be checked with domify
+		// TODO: Content should be checked with dompurify
 		await updateOptionToDb(creationToken, optionId, optionName, content);
 		handleSuccessResponse(req, res, {});
 	} catch (error) {
