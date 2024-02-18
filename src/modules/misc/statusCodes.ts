@@ -21,7 +21,7 @@ const statusCode: StatusCodeObject = {
 		statusCode: 201,
 	},
 	badRequest: {
-		status: 'Bad request',
+		status: 'Bad Request',
 		statusCode: 400,
 	},
 	forbidden: {
@@ -29,7 +29,7 @@ const statusCode: StatusCodeObject = {
 		statusCode: 403,
 	},
 	notFound: {
-		status: 'Not found',
+		status: 'Not Found',
 		statusCode: 404,
 	},
 	internalError: {

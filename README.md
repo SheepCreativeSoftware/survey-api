@@ -2,7 +2,7 @@
 simple API to generate and manage a simple survey.
 The API automatically connects to a SQL Database (MariaDB) and creates necessary tables.
 It is designed to run behind an ngnix proxy (which will provide a frontend).
-A user can create a survey, which provides him a creationToken. The creationToken is used to manage a survey and is like some kind of authentication (No separate user registration/login).
+A user can create a survey, which provides him a creationToken. The creationToken is used to manage a survey and is like some kind of authorization (No separate user registration/login).
 It uses Double Submit Cookie pattern for csrf protection.
 Later on a publicToken is used to open a existing survey and answer it.
 
