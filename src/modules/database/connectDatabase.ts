@@ -6,7 +6,8 @@ let config = {} as mariadb.ConnectionConfig;
 let timeoutHandler = null as null | NodeJS.Timeout;
 
 // Timer set to 10min
-const timeout = 600_000;
+// eslint-disable-next-line no-magic-numbers
+const timeout = Number(process.env.DATABASE_CON_TIMEOUT) || 600_000;
 
 /** If not executed in a given time then the connection get's closed */
 const resetCloseConnection = () => {
@@ -14,9 +15,9 @@ const resetCloseConnection = () => {
 		timeoutHandler.refresh();
 		buntstift.verbose('Refresh DB connection timeout');
 	} else {
-		timeoutHandler = setTimeout(() => {
+		timeoutHandler = setTimeout(async () => {
 			buntstift.verbose('Close DB connection due to no use');
-			conn?.end();
+			await conn?.end();
 			timeoutHandler = null;
 		}, timeout);
 	}
