@@ -110,18 +110,10 @@ test('Database sessions should now have a certain structure', async () => {
 		{
 			Default: null,
 			Extra: '',
-			Field: 'option_id_selected',
+			Field: 'option_selection',
 			Key: '',
 			Null: 'NO',
-			Type: 'varchar(36)',
-		},
-		{
-			Default: null,
-			Extra: '',
-			Field: 'ip_address',
-			Key: '',
-			Null: 'NO',
-			Type: 'tinytext',
+			Type: 'longtext',
 		},
 		{
 			Default: 'current_timestamp()',
