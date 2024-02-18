@@ -79,7 +79,7 @@ content: string,
 ### Table sessions
 survey_id: id,  
 session_id,  
-option_selection: optionId,  
+option_selection: json,  
 submited: DateString (defaults)  
 
 ## Setup

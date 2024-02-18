@@ -1,6 +1,6 @@
 import express from 'express';
 import { getAllOptionFromDb } from '../database/options/optionsDb';
-import { getSurveyFromDb } from '../database/survey/surveyDb';
+import { getSessionFromDb } from '../database/sessions/sessionsDb';
 import { handleErrorResponse } from '../handler/handleErrorResponse';
 import { handleSuccessResponse } from '../handler/handleSuccessResponse';
 import { z as zod } from 'zod';
@@ -17,11 +17,11 @@ const openFullSurveyParams = zod.object({
 	creationToken: zod.string().regex(/^[A-Za-z0-9+/]*/),
 });
 
-router.get('/getFullSurvey', async (req, res) => {
+router.get('/getResults', async (req, res) => {
 	try {
 		const { creationToken } = openFullSurveyParams.parse(req.query);
 
-		const fullSurveyDeatils = await getSurveyFromDb(creationToken);
+		const fullSurveyDeatils = await getSessionFromDb(creationToken);
 		const options = await getAllOptionFromDb(creationToken);
 		const response = Object.assign({}, fullSurveyDeatils, { options });
 		handleSuccessResponse(req, res, response);
