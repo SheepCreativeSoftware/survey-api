@@ -4,7 +4,7 @@ This project is mainly focused on enhancing knowledge and learnig new things, wh
 
 The API automatically connects to a SQL Database (MariaDB) and creates necessary tables.
 It is designed to run behind an ngnix proxy (which will provide a frontend).
-A user can create a survey, which provides him a creationToken. The creationToken is used to manage a survey and is like some kind of authorization (No separate user registration/login).
+A user can create a survey, which provides him a creationToken. The creationToken is used to manage a survey and is like some kind of authorization (No extra user registration/login/identification).
 It uses Double Submit Cookie pattern for csrf protection.
 Later on a publicToken is used to open a existing survey and answer it.
 
@@ -16,7 +16,6 @@ Later on a publicToken is used to open a existing survey and answer it.
 - survey/openShare GET
 	- Requires publicToken
 	- Returns sessionId, surveyName: string, surveyDescription:string, creatorName: string, endDate: DateString, optionsArray
-	- Failes if IP-Address is known
 
 - survey/createNew POST
 	- requires surveyName: string, surveyDescription:string, choicesType:string (multiple, single) creatorName: string, endDate: DateString
@@ -28,7 +27,7 @@ Later on a publicToken is used to open a existing survey and answer it.
 ### Manage Survey (Requires creationToken)
 - manage-survey/getFullSurvey GET
 	- Requires creationToken  
-	- Returns sessionId, surveyName: string, surveyDescription:string, creatorName: string, endDate: DateString, optionsArray
+	- Returns surveyId, surveyName: string, surveyDescription:string, creatorName: string, endDate: DateString, optionsArray
 - manage-survey/getOption GET
 	- Requires creationToken, optionId: number,
 	- returns optionId: number, optionName: string, content: string,
@@ -52,8 +51,7 @@ Later on a publicToken is used to open a existing survey and answer it.
 
 ### Answer (Session)
 - answer-survey/finishSurvey POST
-	- Requires publicToken, sessionId, optionSelection: optionId,
-	- Store PseudoSession
+	- Requires sessionId, optionSelection: optionId,
 
 ### Results
 - result-survey/getResults GET
@@ -82,7 +80,6 @@ content: string,
 survey_id: id,  
 session_id,  
 option_selection: optionId,  
-ip_address: string,  
 submited: DateString (defaults)  
 
 ## Setup

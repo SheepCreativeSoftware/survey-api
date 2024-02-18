@@ -48,7 +48,6 @@ const initDatabase = async function() {
 			survey_id INT NOT NULL,
 			session_id VARCHAR(36) NOT NULL DEFAULT UUID(),
 			option_id_selected VARCHAR(36) NOT NULL,
-			ip_address TINYTEXT NOT NULL,
 			submited DATETIME NULL DEFAULT current_timestamp()
 		)`);
 		buntstift.success('Created sessions data table in DB');
