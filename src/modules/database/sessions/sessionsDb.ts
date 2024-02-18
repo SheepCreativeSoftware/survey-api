@@ -9,27 +9,27 @@ const removeSessionsFromDb = async (creationToken: string) => {
 	WHERE creation_token = ?)`, [creationToken]);
 };
 
-const storeSurveyAnswerToDb = async ({ optionSelection, sessionId }: {
+const storeSurveyAnswerToDb = async ({ optionSelection, surveyId }: {
 	optionSelection: string[],
-	sessionId: number,
+	surveyId: number,
 }) => {
 	const conn = await getConnection();
 	await conn.query(`INSERT INTO sessions
 	(survey_id, option_selection)
 	VALUES (?, ?)`, [
-		sessionId,
-		optionSelection,
+		surveyId,
+		JSON.stringify(optionSelection),
 	]);
 };
 
 const getSessionResults = zod.array(zod.object({
-	optionSelection: zod.string(),
-	surveyId: zod.array(zod.string()),
+	optionSelection: zod.array(zod.string()),
+	sessionId: zod.string(),
 }));
 
 const getSessionFromDb = async (creationToken: string) => {
 	const conn = await getConnection();
-	const response = await conn.query(`SELECT survey_id, option_selection FROM sessions
+	const response = await conn.query(`SELECT session_id, option_selection FROM sessions
 	WHERE survey_id = (SELECT survey_id FROM survey
 		WHERE creation_token = ?)`, [creationToken]);
 

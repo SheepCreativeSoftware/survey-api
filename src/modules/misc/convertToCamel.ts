@@ -17,7 +17,9 @@ const keysToCamelCase = (object: RandomObject | RandomObject[]): unknown => {
 			return keysToCamelCase(value);
 		});
 	}
-	if(typeof object === 'object') {
+
+	// Prevent function and interfaces to be converted
+	if(Object.prototype.toString.call(object) === '[object Object]') {
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		const newObject: any = {};
 

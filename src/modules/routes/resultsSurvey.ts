@@ -21,10 +21,9 @@ router.get('/getResults', async (req, res) => {
 	try {
 		const { creationToken } = openFullSurveyParams.parse(req.query);
 
-		const fullSurveyDeatils = await getSessionFromDb(creationToken);
-		const options = await getAllOptionFromDb(creationToken);
-		const response = Object.assign({}, fullSurveyDeatils, { options });
-		handleSuccessResponse(req, res, response);
+		const surveyResults = await getSessionFromDb(creationToken);
+
+		handleSuccessResponse(req, res, { surveyResults });
 	} catch (error) {
 		handleErrorResponse(req, res, error);
 	}

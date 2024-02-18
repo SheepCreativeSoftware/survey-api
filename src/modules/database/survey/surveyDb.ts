@@ -64,7 +64,7 @@ const getPublicTokenFromDb = async (creationToken: string) => {
 const getSurveyDeatils = zod.object({
 	choicesType: zod.string(),
 	creatorName: zod.string(),
-	endDate: zod.string(),
+	endDate: zod.date(),
 	surveyDescription: zod.string(),
 	surveyId: zod.number(),
 	surveyName: zod.string(),
@@ -75,6 +75,7 @@ const getSurveyFromDb = async (creationToken: string) => {
 	const response = await conn.query(`SELECT survey_id, choices_type, creator_name, end_date, survey_name, survey_description
 	FROM survey 
 	WHERE creation_token = ?`, [creationToken]);
+
 	const converted = keysToCamelCase(response[0]);
 	return getSurveyDeatils.parse(converted);
 };

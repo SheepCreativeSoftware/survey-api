@@ -47,7 +47,7 @@ const initDatabase = async function() {
 		await conn.query(`CREATE TABLE IF NOT EXISTS sessions (
 			survey_id INT NOT NULL,
 			session_id VARCHAR(36) NOT NULL DEFAULT UUID(),
-			option_id_selected VARCHAR(36) NOT NULL,
+			option_selection JSON NOT NULL,
 			submited DATETIME NULL DEFAULT current_timestamp()
 		)`);
 		buntstift.success('Created sessions data table in DB');

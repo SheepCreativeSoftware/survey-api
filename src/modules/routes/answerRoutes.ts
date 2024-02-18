@@ -13,7 +13,7 @@ const router = express.Router();
 
 const finishSurveyRequest = zod.object({
 	optionSelection: zod.array(zod.string()),
-	sessionId: zod.number(),
+	surveyId: zod.number(),
 });
 
 router.post('/finishSurvey', async (req, res) => {

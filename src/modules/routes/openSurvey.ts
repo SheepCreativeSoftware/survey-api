@@ -1,5 +1,4 @@
 import express from 'express';
-import { getAllOptionFromDb } from '../database/options/optionsDb';
 import { getSurveyFromDb } from '../database/survey/surveyDb';
 import { handleErrorResponse } from '../handler/handleErrorResponse';
 import { handleSuccessResponse } from '../handler/handleSuccessResponse';
@@ -22,13 +21,11 @@ router.get('/getFullSurvey', async (req, res) => {
 		const { creationToken } = openFullSurveyParams.parse(req.query);
 
 		const fullSurveyDeatils = await getSurveyFromDb(creationToken);
-		const options = await getAllOptionFromDb(creationToken);
-		const response = Object.assign({}, fullSurveyDeatils, { options });
+		const response = Object.assign({}, fullSurveyDeatils);
 		handleSuccessResponse(req, res, response);
 	} catch (error) {
 		handleErrorResponse(req, res, error);
 	}
 });
-
 
 export { router as openSurveyRoutes };

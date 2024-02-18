@@ -27,7 +27,7 @@ Later on a publicToken is used to open a existing survey and answer it.
 ### Manage Survey (Requires creationToken)
 - manage-survey/getFullSurvey GET
 	- Requires creationToken  
-	- Returns surveyId, surveyName: string, surveyDescription:string, creatorName: string, endDate: DateString, optionsArray
+	- Returns surveyId, surveyName: string, surveyDescription:string, creatorName: string, endDate: DateString
 - manage-survey/getOption GET
 	- Requires creationToken, optionId: number,
 	- returns optionId: number, optionName: string, content: string,
@@ -51,7 +51,7 @@ Later on a publicToken is used to open a existing survey and answer it.
 
 ### Answer (Session)
 - answer-survey/finishSurvey POST
-	- Requires sessionId, optionSelection: optionId,
+	- Requires survey_id, optionSelection: optionId,
 
 ### Results
 - result-survey/getResults GET
