@@ -1,5 +1,7 @@
 # survey-api
-simple API to generate and manage a simple survey.
+simple API to generate and manage a simple survey.  
+This project is mainly focused on enhancing knowledge and learnig new things, while working with them.  
+
 The API automatically connects to a SQL Database (MariaDB) and creates necessary tables.
 It is designed to run behind an ngnix proxy (which will provide a frontend).
 A user can create a survey, which provides him a creationToken. The creationToken is used to manage a survey and is like some kind of authorization (No separate user registration/login).
@@ -80,5 +82,23 @@ ip_address: string,
 submited: DateString (defaults)  
 
 ## Setup
+Requires a relational SQL Database (Designed to run on MariaDB min-version: 10.11.x)
 ### Environment Variables
+
+#### General
+**NODE_ENV** e.g. development | production  
+**HOST** e.g. example.com  
+**URL** e.g. https://example.com  
+**PORT** e.g. 3000  
+
+#### Session
+**SESSION_SECRET** e.g. supersecretpassword  
+
+#### MariaDB Database
+**DATABASE_HOST**=localhost  
+**DATABASE_PORT**=3306  
+**DATABASE_USER**=root  
+**DATABASE_PASSWORD** e.g. supersecretpassword  
+**DATABASE_NAME** e.g. database0815  
+**DATABASE_CON_TIMEOUT** e.g. time in milliseconds for reconnection to DB  
 
