@@ -1,7 +1,9 @@
 /* eslint-disable no-magic-numbers */
-import { closeConnection, connectDb } from '../src/modules/database/connectDatabase';
+import { closeConnection } from '../src/modules/database/connectDatabase';
+import { initDatabase } from '../src/modules/database/initDefaultDatabase';
 import request from 'supertest';
 import { startServer } from '../src/server';
+
 
 
 const { app, server } = startServer();
@@ -11,13 +13,7 @@ let cookie = '';
 
 beforeAll(async () => {
 	// Establish connection to db, as it is required
-	await connectDb({
-		database: process.env.DATABASE_NAME,
-		host: process.env.DATABASE_HOST,
-		password: process.env.DATABASE_PASSWORD,
-		port: Number(process.env.DATABASE_PORT),
-		user: process.env.DATABASE_USER,
-	});
+	await initDatabase();
 	const session = await request(app).get('/api/v1/survey/startSession');
 	CSRFToken = session.body.CSRFToken;
 	cookie = session.headers['set-cookie'];

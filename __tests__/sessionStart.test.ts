@@ -14,3 +14,14 @@ test('Returns a CSRF token string', async () => {
 	expect(response.body.statusCode).toEqual(200);
 	expect(typeof response.body.CSRFToken).toEqual('string');
 });
+
+test('Retruns a not found response in case the route is unkown', async () => {
+	const response = await request(app).get('/apple/route');
+
+	expect(response.statusCode).toBe(404);
+	expect(response.header['content-type']).toMatch(/json/);
+	expect(response.body.status).toEqual('Not Found');
+	expect(response.body.statusCode).toEqual(404);
+});
+
+

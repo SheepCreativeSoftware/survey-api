@@ -1,5 +1,6 @@
 /* eslint-disable no-magic-numbers */
-import { closeConnection, connectDb } from '../src/modules/database/connectDatabase';
+import { closeConnection } from '../src/modules/database/connectDatabase';
+import { initDatabase } from '../src/modules/database/initDefaultDatabase';
 import request from 'supertest';
 import { startServer } from '../src/server';
 
@@ -11,13 +12,7 @@ let cookie = '';
 
 beforeAll(async () => {
 	// Establish connection to db, as it is required
-	await connectDb({
-		database: process.env.DATABASE_NAME,
-		host: process.env.DATABASE_HOST,
-		password: process.env.DATABASE_PASSWORD,
-		port: Number(process.env.DATABASE_PORT),
-		user: process.env.DATABASE_USER,
-	});
+	await initDatabase();
 	const session = await request(app).get('/api/v1/survey/startSession');
 	CSRFToken = session.body.CSRFToken;
 	cookie = session.headers['set-cookie'];
@@ -69,7 +64,7 @@ test('Adds a new option and returns the option id', async () => {
 	expect(response.body.statusCode).toEqual(201);
 	expect(typeof response.body.optionId).toBe('string');
 	optionId = response.body.optionId;
-});
+}, 10_000);
 
 test('Returns the previously added option', async () => {
 	const response = await request(app)
@@ -84,7 +79,7 @@ test('Returns the previously added option', async () => {
 	expect(response.body.optionId).toBe(optionId);
 	expect(response.body.optionName).toBe('Fangfrage');
 	expect(response.body.content).toBe('Ist diese Option gut?');
-});
+}, 10_000);
 
 test('Updates a option and returns OK', async () => {
 	const response = await request(app)
@@ -103,7 +98,7 @@ test('Updates a option and returns OK', async () => {
 	expect(response.header['content-type']).toMatch(/json/);
 	expect(response.body.status).toEqual('OK');
 	expect(response.body.statusCode).toEqual(200);
-});
+}, 10_000);
 
 test('Returns the previously updated option', async () => {
 	const response = await request(app)
@@ -118,7 +113,7 @@ test('Returns the previously updated option', async () => {
 	expect(response.body.optionId).toBe(optionId);
 	expect(response.body.optionName).toBe('Keine Fangfrage');
 	expect(response.body.content).toBe('Ist diese Option nicht gut?');
-});
+}, 10_000);
 
 test('Removes a option and returns OK', async () => {
 	const response = await request(app)
@@ -135,4 +130,4 @@ test('Removes a option and returns OK', async () => {
 	expect(response.header['content-type']).toMatch(/json/);
 	expect(response.body.status).toEqual('OK');
 	expect(response.body.statusCode).toEqual(200);
-});
+}, 10_000);
