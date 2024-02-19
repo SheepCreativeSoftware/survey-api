@@ -9,54 +9,8 @@ It uses Double Submit Cookie pattern for csrf protection.
 Later on a publicToken is used to open a existing survey and answer it.
 
 
-## Routes
-### Default start routes
-- survey/startSession GET
-	- returns csrf token (Required for POST)
-- survey/openShare GET
-	- Requires publicToken
-	- Returns sessionId, surveyName: string, surveyDescription:string, creatorName: string, endDate: DateString, optionsArray
-
-- survey/createNew POST
-	- requires surveyName: string, surveyDescription:string, choicesType:string (multiple, single) creatorName: string, endDate: DateString
-	- returns a creationToken (Required for creation POSTs)
-- survey/removeSurvey POST
-	- requires creationToken,
-	- returns OK
-
-### Manage Survey (Requires creationToken)
-- manage-survey/getFullSurvey GET
-	- Requires creationToken  
-	- Returns surveyId, surveyName: string, surveyDescription:string, creatorName: string, endDate: DateString
-- manage-survey/getOption GET
-	- Requires creationToken, optionId: number,
-	- returns optionId: number, optionName: string, content: string,
-- manage-survey/getAllOptions GET
-	- Requires creationToken,
-	- returns an array with: optionId: number, optionName: string, content: string,
-- manage-survey/getShareLink GET
-	- Requires creationToken,
-	- returns shareLink with publicToken
-
-- manage-survey/addOption POST
-	- Requires creationToken, optionName: string, content: string, 
-	- returns optionId:number
-- manage-survey/updateOption POST
-	- Requires creationToken, optionId: number, optionName: string, content: string, 
-	- returns OK
-- manage-survey/deleteOption POST
-	- Requires creationToken, optionId: number,
-	- returns OK
-
-
-### Answer (Session)
-- answer-survey/finishSurvey POST
-	- Requires survey_id, optionSelection: optionId,
-
-### Results
-- result-survey/getResults GET
-	- Requires creationToken,
-	- Returns results for each option
+## API Routes
+Defined with: [Swagger UI](https://sheepcreativesoftware.github.io/swagger-survey-api/)
 
 ## Database structure
 ### Table survey
