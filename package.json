@@ -1,6 +1,6 @@
 {
   "name": "survey-api",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "Simple API for a small survey app",
   "main": "dist/app.js",
   "scripts": {
