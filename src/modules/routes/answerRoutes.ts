@@ -1,8 +1,10 @@
+import { checkAnswerSurveyObject } from '../protection/zodRules';
 import express from 'express';
+import { getSurveyIdFromDb } from '../database/survey/surveyDb';
+import { handleCreationResponse } from '../handler/handleSuccessResponse';
 import { handleErrorResponse } from '../handler/handleErrorResponse';
-import { handleSuccessResponse } from '../handler/handleSuccessResponse';
 import { storeSurveyAnswerToDb } from '../database/sessions/sessionsDb';
-import { z as zod } from 'zod';
+
 
 // eslint-disable-next-line new-cap
 const router = express.Router();
@@ -11,17 +13,15 @@ const router = express.Router();
  * Creates a new Survey which can be referenced to for options etc.
  */
 
-const finishSurveyRequest = zod.object({
-	optionSelection: zod.array(zod.string()),
-	surveyId: zod.number(),
-});
 
-router.post('/finishSurvey', async (req, res) => {
+
+router.post('/submit', async (req, res) => {
 	try {
-		const response = finishSurveyRequest.parse(req.body);
+		const response = checkAnswerSurveyObject.parse(req.body);
+		const surveyId = await getSurveyIdFromDb({ publicToken: response.publicToken });
 
-		await storeSurveyAnswerToDb(response);
-		handleSuccessResponse(req, res, {});
+		await storeSurveyAnswerToDb({ optionSelection: response.optionSelection, surveyId });
+		handleCreationResponse(req, res, {});
 	} catch (error) {
 		handleErrorResponse(req, res, error);
 	}

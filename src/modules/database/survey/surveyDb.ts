@@ -1,7 +1,8 @@
+import { checkAllTokens, checkSurveyIdObject, checkSurveyObject } from '../../protection/zodRules';
 import { getConnection } from '../connectDatabase';
 import { keysToCamelCase } from '../../misc/convertToCamel';
-import { z as zod } from 'zod';
 
+/** Adds a new survey to DB */
 const addSurveyToDb = async ({ choicesType, creationToken, creatorName, endDate, publicToken, surveyName, surveyDescription }: {
 	choicesType: string,
 	creationToken: string,
@@ -25,51 +26,65 @@ const addSurveyToDb = async ({ choicesType, creationToken, creatorName, endDate,
 	]);
 };
 
-const getSurveyId = zod.object({
-	surveyId: zod.number(),
-});
-
-const getSurveyIdFromDb = async (creationToken: string) => {
+/** Updates a existing survey in DB */
+const updateSurveyInDb = async ({ choicesType, creationToken, creatorName, endDate, surveyName, surveyDescription }: {
+	choicesType: string,
+	creationToken: string,
+	creatorName: string,
+	endDate: Date,
+	publicToken: string,
+	surveyName: string,
+	surveyDescription: string,
+}) => {
 	const conn = await getConnection();
-	const response = await conn.query('SELECT survey_id FROM survey WHERE creation_token = ?', [creationToken]);
+	await conn.query(`UPDATE survey
+	SET choices_type = ?, creator_name = ?, end_date = ?, survey_name = ?, survey_description = ?
+	WHERE creation_token = ?`, [
+		choicesType,
+		creatorName,
+		endDate,
+		surveyName,
+		surveyDescription,
+		creationToken,
+	]);
+};
+
+/** Returns the ID from a exisitng survey from DB */
+const getSurveyIdFromDb = async ({ publicToken, creationToken }: {
+	publicToken?: string,
+	creationToken?: string,
+}) => {
+	const conn = await getConnection();
+	const response = await conn.query('SELECT survey_id FROM survey WHERE creation_token = ? OR public_token = ?', [creationToken, publicToken]);
 	const converted = keysToCamelCase(response[0]);
-	const { surveyId } = getSurveyId.parse(converted);
+	const { surveyId } = checkSurveyIdObject.parse(converted);
 	return surveyId;
 };
 
-const getCreationToken = zod.object({
-	creationToken: zod.string(),
-});
+/** Returns either the public or creation token from a exisiting survey */
+const getTokenFromDb = async ({ publicToken, creationToken }: {
+	publicToken?: string,
+	creationToken?: string,
+}) => {
+	let tokenType = '';
+	let token = '';
+	if(typeof publicToken === 'string') {
+		tokenType = 'public_token';
+		token = publicToken;
+	} else if(typeof creationToken === 'string') {
+		tokenType = 'creation_token';
+		token = creationToken;
+	} else {
+		throw new Error('Missing Token');
+	}
 
-const getCreationTokenFromDb = async (publicToken: string) => {
 	const conn = await getConnection();
-	const response = await conn.query('SELECT public_token FROM survey WHERE creation_token = ?', [publicToken]);
+	const response = await conn.query(`SELECT creation_token, public_token FROM survey WHERE ${tokenType} = ?`, [token]);
 	const converted = keysToCamelCase(response[0]);
-	const { creationToken } = getCreationToken.parse(converted);
-	return creationToken;
+	return checkAllTokens.parse(converted);
 };
 
-const getPublicToken = zod.object({
-	publicToken: zod.string(),
-});
-
-const getPublicTokenFromDb = async (creationToken: string) => {
-	const conn = await getConnection();
-	const response = await conn.query('SELECT public_token FROM survey WHERE creation_token = ?', [creationToken]);
-	const converted = keysToCamelCase(response[0]);
-	const { publicToken } = getPublicToken.parse(converted);
-	return publicToken;
-};
-
-const getSurveyDeatils = zod.object({
-	choicesType: zod.string(),
-	creatorName: zod.string(),
-	endDate: zod.date(),
-	surveyDescription: zod.string(),
-	surveyId: zod.number(),
-	surveyName: zod.string(),
-});
-
+/** Returns a exisitng survey from DB */
 const getSurveyFromDb = async (creationToken: string) => {
 	const conn = await getConnection();
 	const response = await conn.query(`SELECT survey_id, choices_type, creator_name, end_date, survey_name, survey_description
@@ -77,12 +92,13 @@ const getSurveyFromDb = async (creationToken: string) => {
 	WHERE creation_token = ?`, [creationToken]);
 
 	const converted = keysToCamelCase(response[0]);
-	return getSurveyDeatils.parse(converted);
+	return checkSurveyObject.parse(converted);
 };
 
+/** Removes a exisitng survey from DB */
 const removeSurveyFromDb = async (creationToken: string) => {
 	const conn = await getConnection();
 	await conn.query('DELETE FROM survey WHERE creation_token=?', [creationToken]);
 };
 
-export { addSurveyToDb, getCreationTokenFromDb, getSurveyFromDb, getPublicTokenFromDb, getSurveyIdFromDb, removeSurveyFromDb };
+export { addSurveyToDb, getTokenFromDb, getSurveyFromDb, getSurveyIdFromDb, removeSurveyFromDb, updateSurveyInDb };

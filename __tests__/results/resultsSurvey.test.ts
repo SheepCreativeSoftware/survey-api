@@ -1,20 +1,18 @@
 /* eslint-disable no-magic-numbers */
-import { addSurveyToDb, getSurveyIdFromDb, removeSurveyFromDb } from '../src/modules/database/survey/surveyDb';
-import { removeSessionsFromDb, storeSurveyAnswerToDb } from '../src/modules/database/sessions/sessionsDb';
-import { closeConnection } from '../src/modules/database/connectDatabase';
-import { getToken } from '../src/modules/misc/createToken';
-import { initDatabase } from '../src/modules/database/initDefaultDatabase';
-import { removeOptionsFromDb } from '../src/modules/database/options/optionsDb';
+import { addSurveyToDb, getSurveyIdFromDb, removeSurveyFromDb } from '../../src/modules/database/survey/surveyDb';
+import { removeSessionsFromDb, storeSurveyAnswerToDb } from '../../src/modules/database/sessions/sessionsDb';
+import { closeConnection } from '../../src/modules/database/connectDatabase';
+import { getToken } from '../../src/modules/misc/createToken';
+import { initDatabase } from '../../src/modules/database/initDefaultDatabase';
+import { removeOptionsFromDb } from '../../src/modules/database/options/optionsDb';
 import request from 'supertest';
-import { startServer } from '../src/server';
+import { startServer } from '../../src/server';
 
 
 const { app, server } = startServer();
 let creationToken = '';
 let publicToken = '';
 let surveyId = NaN;
-
-
 
 beforeAll(async () => {
 	// Establish connection to db, as it is required
@@ -32,7 +30,7 @@ beforeAll(async () => {
 		surveyDescription: 'Test Survey',
 		surveyName: 'The Test',
 	});
-	surveyId = await getSurveyIdFromDb(creationToken);
+	surveyId = await getSurveyIdFromDb({ creationToken });
 	await storeSurveyAnswerToDb({
 		optionSelection: ['abc1234', 'abc1337', 'abc1235'],
 		surveyId,
@@ -53,7 +51,7 @@ afterAll(async () => {
 
 test('Respond with the results from the survey', async () => {
 	const response = await request(app)
-		.get('/api/v1/result-survey/getResults')
+		.get('/api/v1/results/get')
 		.query({ creationToken })
 		.set('Accept', 'application/json');
 
@@ -67,4 +65,16 @@ test('Respond with the results from the survey', async () => {
 		expect(Array.isArray(result.optionSelection)).toBe(true);
 		for(const selected of result.optionSelection) expect(typeof selected).toBe('string');
 	}
+});
+
+test('Respond with an error code when token is missing', async () => {
+	const response = await request(app)
+		.get('/api/v1/results/get')
+		.query({ })
+		.set('Accept', 'application/json');
+
+	expect(response.statusCode).toBe(400);
+	expect(response.header['content-type']).toMatch(/json/);
+	expect(response.body.status).toEqual('Bad Request');
+	expect(response.body.statusCode).toEqual(400);
 });

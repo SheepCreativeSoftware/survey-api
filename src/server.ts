@@ -4,11 +4,9 @@ import { buntstift } from 'buntstift';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import { csrfProtection } from './modules/protection/csrfProtection';
-import { defaultRoutes } from './modules/routes/defaultRoutes';
 import express from 'express';
-import { openSurveyRoutes } from './modules/routes/openSurvey';
-import { optionsRoutes } from './modules/routes/optionsRoutes';
-import { resultsSurveyRoutes } from './modules/routes/resultsSurvey';
+import { publicRoutes } from './modules/routes/publicRoutes';
+import { resultsRoutes } from './modules/routes/resultsSurvey';
 import { surveyRoutes } from './modules/routes/surveyRoutes';
 
 
@@ -32,12 +30,10 @@ const startServer = () => {
 	app.use(csrfProtection.doubleCsrfProtection);
 
 	// Setup Protected Routes
-	app.use('/api/v1/survey', defaultRoutes);
+	app.use('/api/v1/', publicRoutes);
 	app.use('/api/v1/survey', surveyRoutes);
-	app.use('/api/v1/answer-survey', answerRoutes);
-	app.use('/api/v1/result-survey', resultsSurveyRoutes);
-	app.use('/api/v1/manage-survey', optionsRoutes);
-	app.use('/api/v1/manage-survey', openSurveyRoutes);
+	app.use('/api/v1/answer', answerRoutes);
+	app.use('/api/v1/results', resultsRoutes);
 
 	// Handle errors
 	app.use(notFoundHandler);

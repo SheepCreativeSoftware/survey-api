@@ -1,9 +1,9 @@
+import { checkCreationTokenObject } from '../protection/zodRules';
 import express from 'express';
-import { getAllOptionFromDb } from '../database/options/optionsDb';
 import { getSessionFromDb } from '../database/sessions/sessionsDb';
 import { handleErrorResponse } from '../handler/handleErrorResponse';
 import { handleSuccessResponse } from '../handler/handleSuccessResponse';
-import { z as zod } from 'zod';
+
 
 
 // eslint-disable-next-line new-cap
@@ -13,13 +13,9 @@ const router = express.Router();
  * Opens a existing Survey
  */
 
-const openFullSurveyParams = zod.object({
-	creationToken: zod.string().regex(/^[A-Za-z0-9+/]*/),
-});
-
-router.get('/getResults', async (req, res) => {
+router.get('/get', async (req, res) => {
 	try {
-		const { creationToken } = openFullSurveyParams.parse(req.query);
+		const { creationToken } = checkCreationTokenObject.parse(req.query);
 
 		const surveyResults = await getSessionFromDb(creationToken);
 
@@ -30,4 +26,4 @@ router.get('/getResults', async (req, res) => {
 });
 
 
-export { router as resultsSurveyRoutes };
+export { router as resultsRoutes };

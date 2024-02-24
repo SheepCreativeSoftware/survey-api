@@ -1,7 +1,8 @@
+import { checkResultsObject } from '../../protection/zodRules';
 import { getConnection } from '../connectDatabase';
 import { keysToCamelCase } from '../../misc/convertToCamel';
-import { z as zod } from 'zod';
 
+/** Removes the answers from a survey from DB */
 const removeSessionsFromDb = async (creationToken: string) => {
 	const conn = await getConnection();
 	await conn.query(`DELETE FROM sessions 
@@ -9,6 +10,7 @@ const removeSessionsFromDb = async (creationToken: string) => {
 	WHERE creation_token = ?)`, [creationToken]);
 };
 
+/** Stores a answer from a survey from DB */
 const storeSurveyAnswerToDb = async ({ optionSelection, surveyId }: {
 	optionSelection: string[],
 	surveyId: number,
@@ -22,11 +24,7 @@ const storeSurveyAnswerToDb = async ({ optionSelection, surveyId }: {
 	]);
 };
 
-const getSessionResults = zod.array(zod.object({
-	optionSelection: zod.array(zod.string()),
-	sessionId: zod.string(),
-}));
-
+/** Returns all answers from a survey from DB */
 const getSessionFromDb = async (creationToken: string) => {
 	const conn = await getConnection();
 	const response = await conn.query(`SELECT session_id, option_selection FROM sessions
@@ -34,7 +32,7 @@ const getSessionFromDb = async (creationToken: string) => {
 		WHERE creation_token = ?)`, [creationToken]);
 
 	const converted = keysToCamelCase(response);
-	const result = getSessionResults.parse(converted);
+	const result = checkResultsObject.parse(converted);
 	return result;
 };
 
