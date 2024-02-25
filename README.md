@@ -13,27 +13,27 @@ Defined with: [Swagger UI](https://sheepcreativesoftware.github.io/swagger-surve
 
 ## Database structure
 ### Table survey
-survey_name: string,  
-survey_description: string,  
-creator_name: string,  
-created: DateSting, (defaults)  
-choices_type: string,  
-end_date: DateString,  
-creation_token: Hash,  
-public_token: Hash,  
-survey_id: id (defaults),  
+- survey_id: int [PK] (AUTO INCREMENTS),
+- survey_name: TINYTEXT REQUIRED,
+- survey_description: TEXT REQUIRED,
+- creator_name: TINYTEXT REQUIRED,
+- created: DATETIME, (defaults),
+- choices_type: TINYTEXT REQUIRED,
+- end_date: DATETIME REQUIRED,
+- creation_token: base64url Hash UNIQUE REQUIRED,
+- public_token: base64url Hash UNIQUE REQUIRED,
 
 ### Table options
-survey_id: id,  
-option_id: uuid  
-option_name: string,  
-content: string,  
+- survey_id: REFERENCES TO survey(survey_id),
+- option_id: VARCHAR(36) UUID,
+- option_name: TINYTEXT REQUIRED,
+- content: TEXT REQUIRED,
 
 ### Table sessions
-survey_id: id,  
-session_id,  
-option_selection: json,  
-submited: DateString (defaults)  
+- survey_id: REFERENCES TO survey(survey_id),
+- session_id: VARCHAR(36) UUID,
+- option_selection: JSON REQUIRED (Array of option_id),
+- submited: DATETIME (current timestamp of creation)
 
 ## Setup
 Requires a relational SQL Database (Designed to run on MariaDB min-version: 10.11.x)
@@ -54,5 +54,5 @@ Requires a relational SQL Database (Designed to run on MariaDB min-version: 10.1
 **DATABASE_USER**=root  
 **DATABASE_PASSWORD** e.g. supersecretpassword  
 **DATABASE_NAME** e.g. database0815  
-**DATABASE_CON_TIMEOUT** e.g. time in milliseconds for reconnection to DB  
+**DATABASE_CON_TIMEOUT** e.g. time in milliseconds DB stop connection to DB
 

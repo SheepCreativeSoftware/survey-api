@@ -14,15 +14,15 @@ const initDatabase = async function() {
 
 	try {
 		await conn.query(`CREATE TABLE IF NOT EXISTS survey (
-			survey_id INT NOT NULL primary key AUTO_INCREMENT,
+			survey_id INT PRIMARY KEY AUTO_INCREMENT,
 			survey_name TINYTEXT NOT NULL,
 			survey_description TEXT NOT NULL,
 			choices_type TINYTEXT NOT NULL,
 			creator_name TINYTEXT NOT NULL,
 			created DATETIME NULL DEFAULT current_timestamp(),
 			end_date DATETIME NOT NULL,
-			creation_token TINYTEXT NOT NULL,
-			public_token TINYTEXT NOT NULL
+			creation_token TINYTEXT UNIQUE NOT NULL,
+			public_token TINYTEXT UNIQUE NOT NULL
 		)`);
 		buntstift.success('Created survey table in DB');
 	} catch (error) {
@@ -32,7 +32,7 @@ const initDatabase = async function() {
 
 	try {
 		await conn.query(`CREATE TABLE IF NOT EXISTS options (
-			survey_id INT NOT NULL,
+			survey_id INT NOT NULL REFERENCES survey(survey_id),
 			option_id VARCHAR(36) NOT NULL DEFAULT UUID(),
 			option_name TINYTEXT NOT NULL,
 			content TEXT NOT NULL
@@ -45,7 +45,7 @@ const initDatabase = async function() {
 
 	try {
 		await conn.query(`CREATE TABLE IF NOT EXISTS sessions (
-			survey_id INT NOT NULL,
+			survey_id INT NOT NULL REFERENCES survey(survey_id),
 			session_id VARCHAR(36) NOT NULL DEFAULT UUID(),
 			option_selection JSON NOT NULL,
 			submited DATETIME NULL DEFAULT current_timestamp()
