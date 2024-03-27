@@ -1,10 +1,10 @@
 
-import { checkOptionsObject } from '../../protection/zodRules';
+import { checkOptionsObject } from '../../modules/protection/zodRules';
 // eslint-disable-next-line no-shadow
 import crypto from 'crypto';
 import { getConnection } from '../connectDatabase';
 import { getSurveyIdFromDb } from '../survey/surveyDb';
-import { keysToCamelCase } from '../../misc/convertToCamel';
+import { keysToCamelCase } from '../../modules/misc/convertToCamel';
 
 
 /** Adds a new option to the survey into the DB */

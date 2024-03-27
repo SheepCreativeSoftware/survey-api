@@ -1,6 +1,6 @@
-import { checkResultsObject } from '../../protection/zodRules';
+import { checkResultsObject } from '../../modules/protection/zodRules';
 import { getConnection } from '../connectDatabase';
-import { keysToCamelCase } from '../../misc/convertToCamel';
+import { keysToCamelCase } from '../../modules/misc/convertToCamel';
 
 /** Removes the answers from a survey from DB */
 const removeSessionsFromDb = async (creationToken: string) => {

@@ -1,15 +1,16 @@
 /* eslint-disable no-magic-numbers */
-import { addSurveyToDb, getSurveyIdFromDb, removeSurveyFromDb } from '../../src/modules/database/survey/surveyDb';
-import { removeSessionsFromDb, storeSurveyAnswerToDb } from '../../src/modules/database/sessions/sessionsDb';
-import { closeConnection } from '../../src/modules/database/connectDatabase';
+import { addSurveyToDb, getSurveyIdFromDb, removeSurveyFromDb } from '../../src/database/survey/surveyDb';
+import { removeSessionsFromDb, storeSurveyAnswerToDb } from '../../src/database/sessions/sessionsDb';
+import { closeConnection } from '../../src/database/connectDatabase';
+import { getApi } from '../../src/api/getApi';
 import { getToken } from '../../src/modules/misc/createToken';
-import { initDatabase } from '../../src/modules/database/initDefaultDatabase';
-import { removeOptionsFromDb } from '../../src/modules/database/options/optionsDb';
+import { initDatabase } from '../../src/database/initDefaultDatabase';
+import { removeOptionsFromDb } from '../../src/database/options/optionsDb';
 import request from 'supertest';
-import { startServer } from '../../src/server';
 
 
-const { app, server } = startServer();
+
+const app = getApi();
 let creationToken = '';
 let publicToken = '';
 let surveyId = NaN;
@@ -45,7 +46,6 @@ afterAll(async () => {
 	await removeSessionsFromDb(creationToken);
 	await removeOptionsFromDb(creationToken);
 	await removeSurveyFromDb(creationToken);
-	server.close();
 	await closeConnection();
 });
 
