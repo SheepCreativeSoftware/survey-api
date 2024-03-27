@@ -1,6 +1,6 @@
-import { checkAllTokens, checkSurveyIdObject, checkSurveyObject } from '../../protection/zodRules';
+import { checkAllTokens, checkSurveyIdObject, checkSurveyObject } from '../../modules/protection/zodRules';
 import { getConnection } from '../connectDatabase';
-import { keysToCamelCase } from '../../misc/convertToCamel';
+import { keysToCamelCase } from '../../modules/misc/convertToCamel';
 
 /** Adds a new survey to DB */
 const addSurveyToDb = async ({ choicesType, creationToken, creatorName, endDate, publicToken, surveyName, surveyDescription }: {

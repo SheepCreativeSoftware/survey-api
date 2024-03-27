@@ -1,5 +1,5 @@
-import { getConnection } from '../src/modules/database/connectDatabase';
-import { initDatabase } from '../src/modules/database/initDefaultDatabase';
+import { getConnection } from '../src/database/connectDatabase';
+import { initDatabase } from '../src/database/initDefaultDatabase';
 
 beforeAll(async () => {
 	await initDatabase();

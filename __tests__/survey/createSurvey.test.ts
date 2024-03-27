@@ -1,13 +1,14 @@
 /* eslint-disable no-magic-numbers */
-import { closeConnection } from '../../src/modules/database/connectDatabase';
-import { initDatabase } from '../../src/modules/database/initDefaultDatabase';
-import { removeOptionsFromDb } from '../../src/modules/database/options/optionsDb';
-import { removeSessionsFromDb } from '../../src/modules/database/sessions/sessionsDb';
-import { removeSurveyFromDb } from '../../src/modules/database/survey/surveyDb';
+import { closeConnection } from '../../src/database/connectDatabase';
+import { getApi } from '../../src/api/getApi';
+import { initDatabase } from '../../src/database/initDefaultDatabase';
+import { removeOptionsFromDb } from '../../src/database/options/optionsDb';
+import { removeSessionsFromDb } from '../../src/database/sessions/sessionsDb';
+import { removeSurveyFromDb } from '../../src/database/survey/surveyDb';
 import request from 'supertest';
-import { startServer } from '../../src/server';
 
-const { app, server } = startServer();
+
+const app = getApi();
 let creationToken = '';
 
 beforeAll(async () => {
@@ -19,7 +20,6 @@ afterAll(async () => {
 	await removeSessionsFromDb(creationToken);
 	await removeOptionsFromDb(creationToken);
 	await removeSurveyFromDb(creationToken);
-	server.close();
 	await closeConnection();
 });
 
