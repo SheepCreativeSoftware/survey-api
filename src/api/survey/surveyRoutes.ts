@@ -5,7 +5,6 @@ import { shareLinkHandle } from './share-link/handle';
 import { submitHandle } from './submit/handle';
 import { updateHandle } from './update/handle';
 
-// eslint-disable-next-line new-cap
 const router = express.Router();
 
 router.get('/get', getSurvey());

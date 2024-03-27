@@ -1,10 +1,9 @@
-import { getSurveyFromDb, getTokenFromDb } from '../../../database/survey/surveyDb';
-import { checkPublicTokenObject } from '../../../modules/protection/zodRules';
-import { getAllOptionsFromDb } from '../../../database/options/optionsDb';
-import { handleErrorResponse } from '../../../modules/handler/handleErrorResponse';
 import type { Handler } from 'express';
+import { getAllOptionsFromDb } from '../../../database/options/optionsDb';
+import { getSurveyFromDb, getTokenFromDb } from '../../../database/survey/surveyDb';
+import { handleErrorResponse } from '../../../modules/handler/handleErrorResponse';
 import { handleSuccessResponse } from '../../../modules/handler/handleSuccessResponse';
-
+import { checkPublicTokenObject } from '../../../modules/protection/zodRules';
 
 const openShareHandle = (): Handler => {
 	return async (req, res) => {

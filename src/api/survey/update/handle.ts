@@ -1,11 +1,11 @@
-import { checkSurveyModifyObject } from '../../../modules/protection/zodRules';
-import { getToken } from '../../../modules/misc/createToken';
-import { handleErrorResponse } from '../../../modules/handler/handleErrorResponse';
 import type { Handler } from 'express';
-import { handleSuccessResponse } from '../../../modules/handler/handleSuccessResponse';
+import type { z as zod } from 'zod';
 import { updateOptionToDb } from '../../../database/options/optionsDb';
 import { updateSurveyInDb } from '../../../database/survey/surveyDb';
-import { z as zod } from 'zod';
+import { handleErrorResponse } from '../../../modules/handler/handleErrorResponse';
+import { handleSuccessResponse } from '../../../modules/handler/handleSuccessResponse';
+import { getToken } from '../../../modules/misc/createToken';
+import { checkSurveyModifyObject } from '../../../modules/protection/zodRules';
 
 /**
  * Updates a existing Survey
@@ -24,9 +24,16 @@ const updateSurvey = async (response: UpdateSurvey) => {
 		surveyName: response.surveyName,
 	});
 
-	for(const option of response.options) {
-		if(typeof option.optionId === 'undefined') throw new Error('Missing option ID');
-		await updateOptionToDb(response.creationToken, option.optionId, option.optionName, option.content);
+	for (const option of response.options) {
+		if (typeof option.optionId === 'undefined') {
+			throw new Error('Missing option ID');
+		}
+		await updateOptionToDb(
+			response.creationToken,
+			option.optionId,
+			option.optionName,
+			option.content,
+		);
 	}
 };
 
@@ -35,7 +42,7 @@ const updateHandle = (): Handler => {
 		try {
 			const response = checkSurveyModifyObject.parse(req.body);
 			await updateSurvey(response);
-			handleSuccessResponse(req, res, { });
+			handleSuccessResponse(req, res, {});
 		} catch (error) {
 			handleErrorResponse(req, res, error);
 		}

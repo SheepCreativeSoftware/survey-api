@@ -1,4 +1,3 @@
-/* eslint-disable no-magic-numbers */
 import { addSurveyToDb, removeSurveyFromDb } from '../../src/database/survey/surveyDb';
 import { closeConnection } from '../../src/database/connectDatabase';
 import { getApi } from '../../src/api/getApi';

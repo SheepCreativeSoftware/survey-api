@@ -1,10 +1,9 @@
-import { checkAnswerSurveyObject } from '../../../modules/protection/zodRules';
-import { getSurveyIdFromDb } from '../../../database/survey/surveyDb';
-import { handleCreationResponse } from '../../../modules/handler/handleSuccessResponse';
-import { handleErrorResponse } from '../../../modules/handler/handleErrorResponse';
 import type { Handler } from 'express';
 import { storeSurveyAnswerToDb } from '../../../database/sessions/sessionsDb';
-
+import { getSurveyIdFromDb } from '../../../database/survey/surveyDb';
+import { handleErrorResponse } from '../../../modules/handler/handleErrorResponse';
+import { handleCreationResponse } from '../../../modules/handler/handleSuccessResponse';
+import { checkAnswerSurveyObject } from '../../../modules/protection/zodRules';
 
 const submitHandle = (): Handler => {
 	return async (req, res) => {

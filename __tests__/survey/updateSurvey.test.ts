@@ -1,4 +1,3 @@
-/* eslint-disable no-magic-numbers */
 import { addOptionToDb, removeOptionsFromDb } from '../../src/database/options/optionsDb';
 import { addSurveyToDb, removeSurveyFromDb } from '../../src/database/survey/surveyDb';
 import { closeConnection } from '../../src/database/connectDatabase';
@@ -49,7 +48,7 @@ test('Update a exisitng survey', async () => {
 	const response = await request(app)
 		.post('/api/v1/survey/update')
 		.set('Accept', 'application/json')
-		.set('x-csrf-token', session.body.CSRFToken)
+		.set('x-csrf-token', session.body.csrfToken)
 		.set('cookie', session.headers['set-cookie'])
 		.send({
 			choicesType: 'single',
@@ -84,7 +83,7 @@ test('Fails with missing data', async () => {
 	const response = await request(app)
 		.post('/api/v1/survey/update')
 		.set('Accept', 'application/json')
-		.set('x-csrf-token', session.body.CSRFToken)
+		.set('x-csrf-token', session.body.csrfToken)
 		.set('cookie', session.headers['set-cookie'])
 		.send({
 			creatorName: 6,

@@ -1,7 +1,6 @@
 import express from 'express';
 import { getHandle } from './get/handle';
 
-// eslint-disable-next-line new-cap
 const router = express.Router();
 
 /**
@@ -9,6 +8,5 @@ const router = express.Router();
  */
 
 router.get('/get', getHandle());
-
 
 export { router as resultsRoutes };

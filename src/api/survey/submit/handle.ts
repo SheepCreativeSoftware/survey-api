@@ -1,12 +1,12 @@
+import type { UUID } from 'node:crypto';
+import type { Handler } from 'express';
+import type { z as zod } from 'zod';
 import { addOptionToDb } from '../../../database/options/optionsDb';
 import { addSurveyToDb } from '../../../database/survey/surveyDb';
-import { checkSurveySubmitObject } from '../../../modules/protection/zodRules';
-import { getToken } from '../../../modules/misc/createToken';
-import { handleCreationResponse } from '../../../modules/handler/handleSuccessResponse';
 import { handleErrorResponse } from '../../../modules/handler/handleErrorResponse';
-import type { Handler } from 'express';
-import { UUID } from 'node:crypto';
-import { z as zod } from 'zod';
+import { handleCreationResponse } from '../../../modules/handler/handleSuccessResponse';
+import { getToken } from '../../../modules/misc/createToken';
+import { checkSurveySubmitObject } from '../../../modules/protection/zodRules';
 
 /**
  * Creates a new Survey which can be referenced to for options etc.
@@ -27,7 +27,7 @@ const createNewSurvey = async (response: CreateSurvey) => {
 	});
 
 	const optionIds = [] as UUID[];
-	for(const option of response.options) {
+	for (const option of response.options) {
 		const optionId = await addOptionToDb(creationToken, option.optionName, option.content);
 		optionIds.push(optionId);
 	}

@@ -19,10 +19,7 @@ const checkSurveyIdObject = zod.object({
 	surveyId: zod.number(),
 });
 
-const ChoicesTypeSchema = zod.union([
-	zod.literal('single'),
-	zod.literal('multiple'),
-]);
+const ChoicesTypeSchema = zod.union([zod.literal('single'), zod.literal('multiple')]);
 
 const checkSurveyObject = zod.object({
 	choicesType: ChoicesTypeSchema,
@@ -33,11 +30,13 @@ const checkSurveyObject = zod.object({
 	surveyName: zod.string(),
 });
 
-const checkOptionsObject = zod.array(zod.object({
-	content: zod.string(),
-	optionId: zod.string().uuid().optional(),
-	optionName: zod.string(),
-}));
+const checkOptionsObject = zod.array(
+	zod.object({
+		content: zod.string(),
+		optionId: zod.string().uuid().optional(),
+		optionName: zod.string(),
+	}),
+);
 
 const checkSurveySubmitObject = zod.object({
 	choicesType: ChoicesTypeSchema,
@@ -63,11 +62,12 @@ const checkAnswerSurveyObject = zod.object({
 	publicToken: zod.string().regex(/^[A-Za-z0-9+/]*/),
 });
 
-const checkResultsObject = zod.array(zod.object({
-	optionSelection: zod.array(zod.string()),
-	sessionId: zod.string(),
-}));
-
+const checkResultsObject = zod.array(
+	zod.object({
+		optionSelection: zod.array(zod.string()),
+		sessionId: zod.string(),
+	}),
+);
 
 export {
 	checkAllTokens,

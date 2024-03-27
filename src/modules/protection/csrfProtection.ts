@@ -1,6 +1,8 @@
 import { doubleCsrf } from 'csrf-csrf';
 
-if(typeof process.env.SESSION_SECRET === 'undefined') throw new Error('Missing Session Secret');
+if (typeof process.env.SESSION_SECRET === 'undefined') {
+	throw new Error('Missing Session Secret');
+}
 
 const csrfProtection = doubleCsrf({
 	cookieName: `${process.env.HOST}.x-csrf-token`,
@@ -11,7 +13,7 @@ const csrfProtection = doubleCsrf({
 		secure: true,
 	},
 	getSecret: () => process.env.SESSION_SECRET || 'WillFailOnUndefined',
-	getTokenFromRequest: (req) => req.headers['x-csrf-token'],
+	getTokenFromRequest: req => req.headers['x-csrf-token'],
 	ignoredMethods: ['GET', 'HEAD', 'OPTIONS'],
 	size: 64,
 });

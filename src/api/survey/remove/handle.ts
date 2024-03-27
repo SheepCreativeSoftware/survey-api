@@ -1,10 +1,10 @@
-import { checkCreationTokenObject } from '../../../modules/protection/zodRules';
-import { handleErrorResponse } from '../../../modules/handler/handleErrorResponse';
 import type { Handler } from 'express';
-import { handleSuccessResponse } from '../../../modules/handler/handleSuccessResponse';
 import { removeOptionsFromDb } from '../../../database/options/optionsDb';
 import { removeSessionsFromDb } from '../../../database/sessions/sessionsDb';
 import { removeSurveyFromDb } from '../../../database/survey/surveyDb';
+import { handleErrorResponse } from '../../../modules/handler/handleErrorResponse';
+import { handleSuccessResponse } from '../../../modules/handler/handleSuccessResponse';
+import { checkCreationTokenObject } from '../../../modules/protection/zodRules';
 
 /**
  * Removes a existing survey from the database

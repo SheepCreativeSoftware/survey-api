@@ -1,14 +1,17 @@
-import { clientErrorHandler, errorHandler, notFoundHandler } from '../modules/handler/errorHandlers';
-import { answerRoutes } from './answer/router';
-import type { Application } from 'express';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
-import { csrfProtection } from '../modules/protection/csrfProtection';
+import type { Application } from 'express';
 import express from 'express';
+import {
+	clientErrorHandler,
+	errorHandler,
+	notFoundHandler,
+} from '../modules/handler/errorHandlers';
+import { csrfProtection } from '../modules/protection/csrfProtection';
+import { answerRoutes } from './answer/router';
 import { publicRoutes } from './public/router';
 import { resultsRoutes } from './results/router';
 import { surveyRoutes } from './survey/surveyRoutes';
-
 
 const getApi = (): Application => {
 	const app = express();
@@ -18,15 +21,17 @@ const getApi = (): Application => {
 	app.use(cookieParser());
 
 	// Setup basic middlewares
-	if(process.env.NODE_ENV === 'production') {
+	if (process.env.NODE_ENV === 'production') {
 		// Trust first proxy (ngnix)
 		app.set('trust proxy', true);
 	}
 
 	// Setup protection
-	app.use(cors({
-		origin: process.env.URL,
-	}));
+	app.use(
+		cors({
+			origin: process.env.URL,
+		}),
+	);
 	app.use(csrfProtection.doubleCsrfProtection);
 
 	// Setup Protected Routes

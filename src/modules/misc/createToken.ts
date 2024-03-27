@@ -1,5 +1,4 @@
-// eslint-disable-next-line no-shadow
-import crypto from 'crypto';
+import crypto from 'node:crypto';
 
 const tokenBytes = 48;
 

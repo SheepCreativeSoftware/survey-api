@@ -1,4 +1,3 @@
-/* eslint-disable no-magic-numbers */
 import { getApi } from '../../src/api/getApi';
 import request from 'supertest';
 
@@ -11,7 +10,7 @@ test('Returns a CSRF token string', async () => {
 	expect(response.header['content-type']).toMatch(/json/);
 	expect(response.body.status).toEqual('OK');
 	expect(response.body.statusCode).toEqual(200);
-	expect(typeof response.body.CSRFToken).toEqual('string');
+	expect(typeof response.body.csrfToken).toEqual('string');
 });
 
 test('Retruns a not found response in case the route is unkown', async () => {

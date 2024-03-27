@@ -1,10 +1,9 @@
 import { buntstift } from 'buntstift';
 import { connectDb } from './connectDatabase';
 
-const initDatabase = async function() {
+const initDatabase = async () => {
 	buntstift.info('Initialize DB');
 	const conn = await connectDb({
-
 		database: process.env.DATABASE_NAME,
 		host: process.env.DATABASE_HOST,
 		password: process.env.DATABASE_PASSWORD,
@@ -27,7 +26,9 @@ const initDatabase = async function() {
 		buntstift.success('Created survey table in DB');
 	} catch (error) {
 		buntstift.error('Failed to create survey table in DB');
-		if(error instanceof Error) buntstift.error(error.message);
+		if (error instanceof Error) {
+			buntstift.error(error.message);
+		}
 	}
 
 	try {
@@ -40,7 +41,9 @@ const initDatabase = async function() {
 		buntstift.success('Created options data table in DB');
 	} catch (error) {
 		buntstift.error('Failed to create options data table in DB');
-		if(error instanceof Error) buntstift.error(error.message);
+		if (error instanceof Error) {
+			buntstift.error(error.message);
+		}
 	}
 
 	try {
@@ -53,7 +56,9 @@ const initDatabase = async function() {
 		buntstift.success('Created sessions data table in DB');
 	} catch (error) {
 		buntstift.error('Failed to create sessions data table in DB');
-		if(error instanceof Error) buntstift.error(error.message);
+		if (error instanceof Error) {
+			buntstift.error(error.message);
+		}
 	}
 
 	await conn.end();

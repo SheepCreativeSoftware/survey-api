@@ -1,7 +1,6 @@
 import express from 'express';
 import { submitHandle } from './submit/handle';
 
-// eslint-disable-next-line new-cap
 const router = express.Router();
 
 /**

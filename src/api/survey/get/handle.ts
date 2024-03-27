@@ -1,9 +1,9 @@
-import { checkCreationTokenObject } from '../../../modules/protection/zodRules';
+import type { Handler } from 'express';
 import { getAllOptionsFromDb } from '../../../database/options/optionsDb';
 import { getSurveyFromDb } from '../../../database/survey/surveyDb';
 import { handleErrorResponse } from '../../../modules/handler/handleErrorResponse';
-import type { Handler } from 'express';
 import { handleSuccessResponse } from '../../../modules/handler/handleSuccessResponse';
+import { checkCreationTokenObject } from '../../../modules/protection/zodRules';
 
 /**
  * Gets the survey from DB

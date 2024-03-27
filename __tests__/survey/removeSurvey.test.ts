@@ -1,4 +1,3 @@
-/* eslint-disable no-magic-numbers */
 import { addSurveyToDb, removeSurveyFromDb } from '../../src/database/survey/surveyDb';
 import { closeConnection } from '../../src/database/connectDatabase';
 import { getApi } from '../../src/api/getApi';
@@ -45,7 +44,7 @@ test('Removes the existing survey', async () => {
 	const response = await request(app)
 		.post('/api/v1/survey/remove')
 		.set('Accept', 'application/json')
-		.set('x-csrf-token', session.body.CSRFToken)
+		.set('x-csrf-token', session.body.csrfToken)
 		.set('cookie', session.headers['set-cookie'])
 		.send({ creationToken });
 
@@ -61,7 +60,7 @@ test('Fail to remove without creationToken', async () => {
 	const response = await request(app)
 		.post('/api/v1/survey/remove')
 		.set('Accept', 'application/json')
-		.set('x-csrf-token', session.body.CSRFToken)
+		.set('x-csrf-token', session.body.csrfToken)
 		.set('cookie', session.headers['set-cookie'])
 		.send({ });
 

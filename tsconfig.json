@@ -1,22 +1,15 @@
 {
 	"compilerOptions": {
-		"target": "ESNext",
-		"lib": ["DOM", "ESNext"],
+		"target": "ES2022",
+		"lib": ["DOM", "ES2022"],
 		"module": "NodeNext",
 		"outDir": "./dist",
 		"strict": true,
 		"skipLibCheck": true,
 		"forceConsistentCasingInFileNames": true,
 		"moduleResolution": "NodeNext",
-		"declaration": true,
-		"removeComments": false,
-		"esModuleInterop": true,
+		"esModuleInterop": true
 	},
-	"include": [
-		"src/**/*"
-, "__tests__/public/sessionStart.test.ts"	],
-	"exclude": [
-		"src/**/*.test.ts",
-		"__tests__"
-	]
+	"include": ["src/**/*"],
+	"exclude": ["src/**/*.test.ts", "__tests__", "node_modules"]
 }

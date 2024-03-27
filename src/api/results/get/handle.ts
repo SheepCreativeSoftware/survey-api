@@ -1,9 +1,8 @@
-import { checkCreationTokenObject } from '../../../modules/protection/zodRules';
+import type { Handler } from 'express';
 import { getSessionFromDb } from '../../../database/sessions/sessionsDb';
 import { handleErrorResponse } from '../../../modules/handler/handleErrorResponse';
-import type { Handler } from 'express';
 import { handleSuccessResponse } from '../../../modules/handler/handleSuccessResponse';
-
+import { checkCreationTokenObject } from '../../../modules/protection/zodRules';
 
 const getHandle = (): Handler => {
 	return async (req, res) => {

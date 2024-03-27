@@ -1,4 +1,3 @@
-/* eslint-disable no-magic-numbers */
 import { addSurveyToDb, removeSurveyFromDb } from '../../src/database/survey/surveyDb';
 import { closeConnection } from '../../src/database/connectDatabase';
 import { getApi } from '../../src/api/getApi';
@@ -13,14 +12,14 @@ import request from 'supertest';
 const app = getApi();
 let creationToken = '';
 let publicToken = '';
-let CSRFToken = '';
+let csrfToken = '';
 let cookie = '';
 
 beforeAll(async () => {
 	// Establish connection to db, as it is required
 	await initDatabase();
 	const session = await request(app).get('/api/v1/start-session');
-	CSRFToken = session.body.CSRFToken;
+	csrfToken = session.body.csrfToken;
 	cookie = session.headers['set-cookie'];
 
 	creationToken = getToken();
@@ -48,7 +47,7 @@ test('Post a answer without a error', async () => {
 	const response = await request(app)
 		.post('/api/v1/answer/submit')
 		.set('Accept', 'application/json')
-		.set('x-csrf-token', CSRFToken)
+		.set('x-csrf-token', csrfToken)
 		.set('cookie', cookie)
 		.send({
 			optionSelection: ['abc1234', 'abc1337', 'abc1235'],
@@ -65,7 +64,7 @@ test('Post a answer without token', async () => {
 	const response = await request(app)
 		.post('/api/v1/answer/submit')
 		.set('Accept', 'application/json')
-		.set('x-csrf-token', CSRFToken)
+		.set('x-csrf-token', csrfToken)
 		.set('cookie', cookie)
 		.send({
 			optionSelection: ['abc1234', 'abc1337', 'abc1235'],
@@ -82,7 +81,7 @@ test('Post a answer with wrong token', async () => {
 	const response = await request(app)
 		.post('/api/v1/answer/submit')
 		.set('Accept', 'application/json')
-		.set('x-csrf-token', CSRFToken)
+		.set('x-csrf-token', csrfToken)
 		.set('cookie', cookie)
 		.send({
 			optionSelection: ['abc1234', 'abc1337', 'abc1235'],

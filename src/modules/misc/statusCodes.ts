@@ -1,15 +1,13 @@
-/* eslint-disable sort-keys */
-
 type StatusObject = {
-	status: string,
-	statusCode: number,
-}
+	status: string;
+	statusCode: number;
+};
 
-type StatusCodes = 'okay' | 'created' | 'badRequest' | 'forbidden' | 'notFound' | 'internalError'
+type StatusCodes = 'okay' | 'created' | 'badRequest' | 'forbidden' | 'notFound' | 'internalError';
 
 type StatusCodeObject = {
-	[key in StatusCodes]: StatusObject
-}
+	[Key in StatusCodes]: StatusObject;
+};
 
 const statusCode: StatusCodeObject = {
 	okay: {
@@ -38,4 +36,5 @@ const statusCode: StatusCodeObject = {
 	},
 };
 
-export { StatusCodeObject, StatusObject, statusCode };
+export type { StatusCodeObject, StatusObject };
+export { statusCode };

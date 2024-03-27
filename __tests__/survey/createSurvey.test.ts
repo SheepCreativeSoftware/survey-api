@@ -1,4 +1,3 @@
-/* eslint-disable no-magic-numbers */
 import { closeConnection } from '../../src/database/connectDatabase';
 import { getApi } from '../../src/api/getApi';
 import { initDatabase } from '../../src/database/initDefaultDatabase';
@@ -25,11 +24,13 @@ afterAll(async () => {
 
 test('Creates a survey and returns a Creation token string', async () => {
 	const session = await request(app).get('/api/v1/start-session');
+	console.log(session.body);
+	
 
 	const response = await request(app)
 		.post('/api/v1/survey/submit')
 		.set('Accept', 'application/json')
-		.set('x-csrf-token', session.body.CSRFToken)
+		.set('x-csrf-token', session.body.csrfToken)
 		.set('cookie', session.headers['set-cookie'])
 		.send({
 			choicesType: 'single',
@@ -63,7 +64,7 @@ test('Fails with missing data', async () => {
 	const response = await request(app)
 		.post('/api/v1/survey/submit')
 		.set('Accept', 'application/json')
-		.set('x-csrf-token', session.body.CSRFToken)
+		.set('x-csrf-token', session.body.csrfToken)
 		.set('cookie', session.headers['set-cookie'])
 		.send({
 			creatorName: 6,
