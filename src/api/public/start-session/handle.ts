@@ -1,9 +1,8 @@
 import type { Handler } from 'express';
-import { handleErrorResponse } from '../../../modules/handler/handleErrorResponse';
 import { handleSuccessResponse } from '../../../modules/handler/handleSuccessResponse';
 
 const startSessionHandle = (): Handler => {
-	return (req, res) => {
+	return (req, res, next) => {
 		try {
 			let csrfToken = '';
 			if (typeof req.csrfToken === 'function') {
@@ -13,7 +12,7 @@ const startSessionHandle = (): Handler => {
 			}
 			handleSuccessResponse(req, res, { csrfToken });
 		} catch (error) {
-			handleErrorResponse(req, res, error);
+			next(error);
 		}
 	};
 };

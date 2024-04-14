@@ -5,6 +5,7 @@ import express from 'express';
 import {
 	clientErrorHandler,
 	errorHandler,
+	logOnError,
 	notFoundHandler,
 } from '../modules/handler/errorHandlers';
 import { csrfProtection } from '../modules/protection/csrfProtection';
@@ -41,6 +42,7 @@ const getApi = (): Application => {
 	app.use('/api/v1/results', resultsRoutes);
 
 	// Handle errors
+	app.use(logOnError);
 	app.use(notFoundHandler);
 	app.use(clientErrorHandler);
 	app.use(errorHandler);

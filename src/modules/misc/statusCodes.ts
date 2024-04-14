@@ -3,7 +3,14 @@ type StatusObject = {
 	statusCode: number;
 };
 
-type StatusCodes = 'okay' | 'created' | 'badRequest' | 'forbidden' | 'notFound' | 'internalError';
+type StatusCodes =
+	| 'okay'
+	| 'created'
+	| 'conflict'
+	| 'badRequest'
+	| 'forbidden'
+	| 'notFound'
+	| 'internalError';
 
 type StatusCodeObject = {
 	[Key in StatusCodes]: StatusObject;
@@ -29,6 +36,10 @@ const statusCode: StatusCodeObject = {
 	notFound: {
 		status: 'Not Found',
 		statusCode: 404,
+	},
+	conflict: {
+		status: 'Conflict',
+		statusCode: 409,
 	},
 	internalError: {
 		status: 'Internal Server Error',

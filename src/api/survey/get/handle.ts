@@ -1,7 +1,6 @@
 import type { Handler } from 'express';
 import { getAllOptionsFromDb } from '../../../database/options/optionsDb';
 import { getSurveyFromDb } from '../../../database/survey/surveyDb';
-import { handleErrorResponse } from '../../../modules/handler/handleErrorResponse';
 import { handleSuccessResponse } from '../../../modules/handler/handleSuccessResponse';
 import { checkCreationTokenObject } from '../../../modules/protection/zodRules';
 
@@ -10,7 +9,7 @@ import { checkCreationTokenObject } from '../../../modules/protection/zodRules';
  */
 
 const getSurvey = (): Handler => {
-	return async (req, res) => {
+	return async (req, res, next) => {
 		try {
 			const { creationToken } = checkCreationTokenObject.parse(req.query);
 
@@ -18,7 +17,7 @@ const getSurvey = (): Handler => {
 			const options = await getAllOptionsFromDb(creationToken);
 			handleSuccessResponse(req, res, survey, { options });
 		} catch (error) {
-			handleErrorResponse(req, res, error);
+			next(error);
 		}
 	};
 };

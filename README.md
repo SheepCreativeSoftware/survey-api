@@ -11,17 +11,34 @@ Later on a publicToken is used to open a existing survey and answer it.
 ## API Routes
 Defined with: [Swagger UI](https://sheepcreativesoftware.github.io/swagger-survey-api/)
 
+- Commands
+	- POST /create-survey => { id }
+	- POST /adjust-survey
+	- POST /complete-survey => removed after 30 days after completion
+	- POST /answer-survey
+- Queries
+	- GET /open-surveys
+	- GET /completed-surveys => results
+
 ## Database structure
+### Table User
+- user_id: int [PK] (AUTO INCREMENTS),
+- first_name: VARCHAR(50) REQUIRED,
+- last_name: VARCHAR(50) REQUIRED,
+- email: VARCHAR(50) REQUIRED UNIQUE,
+- password: VARCHAR(50) REQUIRED
+- active: BOOLEAN
+
+
 ### Table survey
 - survey_id: int [PK] (AUTO INCREMENTS),
+- user_id: int REQURED,
 - survey_name: TINYTEXT REQUIRED,
 - survey_description: TEXT REQUIRED,
-- creator_name: TINYTEXT REQUIRED,
 - created: DATETIME, (defaults),
 - choices_type: TINYTEXT REQUIRED,
 - end_date: DATETIME REQUIRED,
-- creation_token: base64url Hash UNIQUE REQUIRED,
-- public_token: base64url Hash UNIQUE REQUIRED,
+- completed: BOOLEAN
 
 ### Table options
 - survey_id: REFERENCES TO survey(survey_id),
@@ -29,9 +46,9 @@ Defined with: [Swagger UI](https://sheepcreativesoftware.github.io/swagger-surve
 - option_name: TINYTEXT REQUIRED,
 - content: TEXT REQUIRED,
 
-### Table sessions
+### Table results
 - survey_id: REFERENCES TO survey(survey_id),
-- session_id: VARCHAR(36) UUID,
+- result_id: VARCHAR(36) UUID,
 - option_selection: JSON REQUIRED (Array of option_id),
 - submited: DATETIME (current timestamp of creation)
 

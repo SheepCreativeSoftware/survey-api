@@ -71,6 +71,7 @@ const getConnection = () => {
 	return reconnectDb();
 };
 
+/* Close the connection to the DB */
 const closeConnection = async () => {
 	buntstift.verbose('Close DB connection');
 	await conn?.end();
