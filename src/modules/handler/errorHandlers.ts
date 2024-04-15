@@ -28,6 +28,8 @@ const clientErrorHandler = (err: Error, _req: Request, res: Response, next: Next
 	}
 	if (err instanceof Error) {
 		switch (err.name) {
+			case 'Not Found':
+				return res.status(statusCode.notFound.statusCode).send({ message: err.cause });
 			case 'Conflict':
 				return res.status(statusCode.conflict.statusCode).send({ message: err.cause });
 			case 'Bad Request':

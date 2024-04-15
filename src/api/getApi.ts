@@ -13,6 +13,7 @@ import { answerRoutes } from './answer/router';
 import { publicRoutes } from './public/router';
 import { resultsRoutes } from './results/router';
 import { surveyRoutes } from './survey/surveyRoutes';
+import { securityRoutes } from './security/router';
 
 const getApi = (): Application => {
 	const app = express();
@@ -33,6 +34,8 @@ const getApi = (): Application => {
 			origin: process.env.URL,
 		}),
 	);
+
+	app.use('/', securityRoutes);
 	app.use(csrfProtection.doubleCsrfProtection);
 
 	// Setup Protected Routes

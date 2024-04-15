@@ -19,6 +19,9 @@ const registerUserHandle = (): Handler => {
 				password: await hashPassword(requestBody.password),
 			});
 
+			// Activate directly as long as there is no activation route
+			user.activate();
+
 			const conn = await getConnection();
 			await conn.query(
 				`INSERT INTO users (user_id, first_name, last_name, email, password, active)
