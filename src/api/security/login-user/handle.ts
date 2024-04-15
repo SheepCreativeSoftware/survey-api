@@ -1,18 +1,11 @@
 import type { Handler } from 'express';
-import type { ResponseBody } from './response';
-import type { SignOptions } from 'jsonwebtoken';
+import crypto from 'node:crypto';
 import { comparePassword } from '../../../modules/protection/hashPassword';
 import { getConnection } from '../../../database/connectDatabase';
 import { RequestBodyParser } from './request';
 import { SelectUserParser } from './selectUser';
 import { statusCode } from '../../../modules/misc/statusCodes';
 import jwt from 'jsonwebtoken';
-
-const signOptions: SignOptions = {
-	algorithm: 'RS256',
-	expiresIn: '30m',
-	issuer: process.env.HOST,
-};
 
 const loginUserHandle = (): Handler => {
 	return async (req, res, next) => {
@@ -37,7 +30,7 @@ const loginUserHandle = (): Handler => {
 				throw new Error('Forbidden', { cause: 'User is not active' });
 			}
 
-			const isValidPassword = comparePassword(requestBody.password, userFromDb.data.password);
+			const isValidPassword = await comparePassword(requestBody.password, userFromDb.data.password);
 			if (!isValidPassword) {
 				throw new Error('Forbidden', { cause: 'Credentials are wrong' });
 			}
@@ -50,9 +43,16 @@ const loginUserHandle = (): Handler => {
 			jwt.sign(
 				{ userId: userFromDb.data.user_id },
 				process.env.SESSION_SECRET,
-				signOptions,
+				{
+					algorithm: 'HS256',
+					expiresIn: '30m',
+					issuer: process.env.HOST,
+					jwtid: crypto.randomUUID(),
+				},
 				(err, jwt) => {
 					if (err) {
+						console.log(err);
+						
 						return next(
 							new Error('Internal Server Error', {
 								cause: 'Failed to generate JWT token',
@@ -60,17 +60,7 @@ const loginUserHandle = (): Handler => {
 						);
 					}
 
-					if (typeof req.csrfToken === 'undefined') {
-						return next(
-							new Error('Internal Server Error', {
-								cause: 'Failed to generate CSRF Token',
-							}),
-						);
-					}
-
-					const responseBody: ResponseBody = { csrfToken: req.csrfToken() };
-					res.cookie('jwt', jwt);
-					res.status(statusCode.okay.statusCode).send(responseBody);
+					res.status(statusCode.okay.statusCode).send({ jwt });
 				},
 			);
 		} catch (error) {

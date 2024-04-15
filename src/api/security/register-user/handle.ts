@@ -5,6 +5,7 @@ import { newUser } from '../../../domain/user';
 import { hashPassword } from '../../../modules/protection/hashPassword';
 import { getConnection } from '../../../database/connectDatabase';
 import { statusCode } from '../../../modules/misc/statusCodes';
+import { SqlError } from 'mariadb';
 
 const registerUserHandle = (): Handler => {
 	return async (req, res, next) => {
@@ -43,6 +44,9 @@ const registerUserHandle = (): Handler => {
 
 			res.status(statusCode.created.statusCode).send(responseBody);
 		} catch (error) {
+			if(error instanceof SqlError) {
+				return next(new Error('Conflict', { cause: 'Account might already exists'}));
+			}
 			next(error);
 		}
 	};

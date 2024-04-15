@@ -8,12 +8,12 @@ import {
 	logOnError,
 	notFoundHandler,
 } from '../modules/handler/errorHandlers';
-import { csrfProtection } from '../modules/protection/csrfProtection';
 import { answerRoutes } from './answer/router';
 import { publicRoutes } from './public/router';
 import { resultsRoutes } from './results/router';
 import { surveyRoutes } from './survey/surveyRoutes';
 import { securityRoutes } from './security/router';
+import { jwtAuthorization } from '../modules/protection/jwtAuthorization';
 
 const getApi = (): Application => {
 	const app = express();
@@ -35,8 +35,8 @@ const getApi = (): Application => {
 		}),
 	);
 
-	app.use('/', securityRoutes);
-	app.use(csrfProtection.doubleCsrfProtection);
+	app.use(securityRoutes);
+	app.use(jwtAuthorization());
 
 	// Setup Protected Routes
 	app.use('/api/v1/', publicRoutes);

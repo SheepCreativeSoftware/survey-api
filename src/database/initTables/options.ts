@@ -4,11 +4,12 @@ import type { Connection } from 'mariadb';
 const createOptionsTable = async (conn: Connection) => {
 	try {
 		await conn.query(`CREATE TABLE IF NOT EXISTS options (
-			option_id INT PRIMARY KEY AUTO_INCREMENT,
-			survey_id INT NOT NULL,
+			option_id VARCHAR(36) NOT NULL DEFAULT UUID(),
+			survey_id VARCHAR(36) NOT NULL,
 			option_name TINYTEXT NOT NULL,
 			content TEXT NOT NULL,
-			FOREIGN KEY (survey_id)
+			PRIMARY KEY (option_id),
+			FOREIGN KEY fkey_options_survey (survey_id)
 				REFERENCES survey(survey_id)
 				ON DELETE CASCADE
 		)`);

@@ -8,8 +8,8 @@ const createUsersTable = async (conn: Connection) => {
 			first_name VARCHAR(50) NOT NULL,
 			last_name VARCHAR(50) NOT NULL,
 			email VARCHAR(50) NOT NULL UNIQUE,
-			password VARCHAR(50) NOT NULL,
-			active BOOLEAN DEFAULT false,
+			password VARCHAR(200) NOT NULL,
+			active BOOLEAN DEFAULT false NOT NULL,
 			PRIMARY KEY (user_id)
 		)`);
 		buntstift.success('Created user table in DB');

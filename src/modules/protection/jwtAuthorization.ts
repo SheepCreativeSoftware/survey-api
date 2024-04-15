@@ -1,15 +1,19 @@
 import type { UUID } from 'node:crypto';
 import type { Handler } from 'express';
-import jwt from 'jsonwebtoken';
+import { buntstift } from 'buntstift';
 import { getConnection } from '../../database/connectDatabase';
 import { z as zod } from 'zod';
+import jwt from 'jsonwebtoken';
 
 const SelectUserParser = zod.object({
+	// biome-ignore lint/style/useNamingConvention: Keys are defined by the database
 	user_id: zod.string().uuid(),
 	email: zod.string(),
+	// biome-ignore lint/style/useNamingConvention: Keys are defined by the database
 	first_name: zod.string(),
+	// biome-ignore lint/style/useNamingConvention: Keys are defined by the database
 	last_name: zod.string(),
-	active: zod.boolean(),
+	active: zod.number().min(0).max(1),
 });
 
 const getUserById = async (userId: UUID) => {
@@ -25,6 +29,7 @@ const getUserById = async (userId: UUID) => {
 
 	const userFromDb = SelectUserParser.safeParse(row[0]);
 	if (!userFromDb.success) {
+		buntstift.warn(userFromDb.error.stack || userFromDb.error.message);
 		throw new Error('Not Found', { cause: 'User not found' });
 	}
 	if (!userFromDb.data.active) {
@@ -32,7 +37,7 @@ const getUserById = async (userId: UUID) => {
 	}
 
 	return userFromDb.data;
-}
+};
 
 const jwtAuthorization = (): Handler => {
 	return (req, _res, next) => {
@@ -42,7 +47,7 @@ const jwtAuthorization = (): Handler => {
 		}
 
 		const [authType, token] = authHeader.split(' ');
-		if(authType !== 'Bearer') {
+		if (authType !== 'Bearer') {
 			return next(new Error('Forbidden', { cause: 'Wrong Auth header' }));
 		}
 
@@ -52,33 +57,39 @@ const jwtAuthorization = (): Handler => {
 			});
 		}
 
-		jwt.verify(token, process.env.SESSION_SECRET, { issuer: process.env.HOST }, async (err, token) => {
-			try {
-				if (err) {
-					throw new Error('Forbidden', {
-						cause: 'Failed to verify token',
-					});
-				}
-				if(typeof token === 'undefined' || typeof token === "string") {
-					throw new Error('Internal Server Error', {
-						cause: 'JWT Token has wrong format',
-					});
-				}
+		jwt.verify(
+			token,
+			process.env.SESSION_SECRET,
+			{ issuer: process.env.HOST },
+			async (err, token) => {
+				try {
+					if (err) {
+						buntstift.error(err.message);
+						throw new Error('Forbidden', {
+							cause: 'Failed to verify token',
+						});
+					}
+					if (typeof token === 'undefined' || typeof token === 'string') {
+						throw new Error('Internal Server Error', {
+							cause: 'JWT Token has wrong format',
+						});
+					}
 
-				const userId = token.userId;
-				const user = await getUserById(userId);
+					const userId = token.userId;
+					const user = await getUserById(userId);
 
-				req.user = {
-					email: user.email,
-					firstName: user.first_name,
-					lastName: user.last_name,
-					userId: user.user_id as UUID,
-				};
-				next();
-			} catch (error) {
-				return next(error);
-			}
-		});
+					req.user = {
+						email: user.email,
+						firstName: user.first_name,
+						lastName: user.last_name,
+						userId: user.user_id as UUID,
+					};
+					next();
+				} catch (error) {
+					return next(error);
+				}
+			},
+		);
 	};
 };
 

@@ -26,8 +26,8 @@ const clientErrorHandler = (err: Error, _req: Request, res: Response, next: Next
 	if (err instanceof ZodError) {
 		return res.status(statusCode.badRequest.statusCode).json({ message: err.issues });
 	}
-	if (err instanceof Error) {
-		switch (err.name) {
+	if (err instanceof Error) {		
+		switch (err.message) {
 			case 'Not Found':
 				return res.status(statusCode.notFound.statusCode).send({ message: err.cause });
 			case 'Conflict':
