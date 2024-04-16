@@ -1,9 +1,9 @@
 import { z as zod } from 'zod';
-import { OptionsSchema, SurveySchema } from './sqlOutputValidation';
+import { OptionSchema, SurveySchema } from '../SurveySchema';
 
 const ResponseBodyParser = zod.array(
 	SurveySchema.extend({
-		options: zod.array(OptionsSchema),
+		options: zod.array(OptionSchema),
 	}),
 );
 

@@ -16,8 +16,10 @@ import { securityRoutes } from './security/router';
 import { jwtAuthorizationHandler } from '../modules/protection/jwtAuthorization';
 import {
 	answererAuthorizedHandler,
+	creatorAuthorizedHandler,
 	userAuthorizedHandler,
 } from '../modules/protection/userAuthCheck';
+import { surveyListRouter } from './survey-list/router';
 
 const getApi = (): Application => {
 	const app = express();
@@ -44,10 +46,12 @@ const getApi = (): Application => {
 	app.use(jwtAuthorizationHandler());
 
 	// Setup Protected Routes
-	app.use('/api/v1/', publicRoutes);
-	app.use('/api/v1/survey', surveyRoutes);
-	app.use('/api/v1/results', userAuthorizedHandler(), resultsRoutes);
-	app.use('/api/v1/answer', answererAuthorizedHandler(), answerRoutes);
+	//app.use('/api/v1/', publicRoutes);
+	app.use(userAuthorizedHandler());
+	app.use('/api/v1/survey-list', creatorAuthorizedHandler(), surveyListRouter);
+	//app.use('/api/v1/survey', surveyRoutes);
+	//app.use('/api/v1/results', userAuthorizedHandler(), resultsRoutes);
+	//app.use('/api/v1/answer', answererAuthorizedHandler(), answerRoutes);
 
 	// Handle errors
 	app.use(logOnError);

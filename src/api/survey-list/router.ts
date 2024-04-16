@@ -1,10 +1,13 @@
 import express from 'express';
 import { openSurveysHandler } from './open-surveys/handle';
-import { completedSurveysHandler } from './completed-survey/handle';
+import { completedSurveysHandler } from './completed-surveys/handle';
+import { createSurveyHandler } from './create-survey/handle';
 
 const router = express.Router();
 
-router.get('/api/v1/survey-list/open-surveys', openSurveysHandler());
-router.get('/api/v1/survey-list/completed-surveys', completedSurveysHandler());
+router.post('/create-survey', createSurveyHandler());
 
-export { router as surveyListRoutes };
+router.get('/open-surveys', openSurveysHandler());
+router.get('/completed-surveys', completedSurveysHandler());
+
+export { router as surveyListRouter };

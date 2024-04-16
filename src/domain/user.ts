@@ -43,7 +43,7 @@ class User {
 
 	public disable() {
 		if (this.userId == null) {
-			throw new Error('Conflict', { cause: 'user is not created yet' });
+			throw new Error('user is not created yet');
 		}
 
 		this.active = false;
@@ -55,7 +55,7 @@ class User {
 
 	public getUserId() {
 		if (this.userId == null) {
-			throw new Error('Conflict', { cause: 'user is not created yet' });
+			throw new Error('user is not created yet');
 		}
 		return this.userId;
 	}
@@ -78,7 +78,7 @@ class User {
 
 	public create({ firstName, lastName, email, password }: UserOptions) {
 		if (this.userId != null) {
-			throw new Error('Conflict', { cause: 'user is already created' });
+			throw new Error('user is already created');
 		}
 
 		this.userId = crypto.randomUUID();
@@ -91,7 +91,7 @@ class User {
 
 	public change({ firstName, lastName, email, password }: Partial<UserOptions>) {
 		if (this.userId == null) {
-			throw new Error('Conflict', { cause: 'user is not created yet' });
+			throw new Error('user is not created yet');
 		}
 
 		this.firstName = firstName || this.firstName;

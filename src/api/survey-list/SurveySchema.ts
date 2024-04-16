@@ -11,17 +11,15 @@ const SurveySchema = zod.object({
 	endDate: zod.date(),
 });
 
-const OptionsSchema = zod.object({
+const OptionSchema = zod.object({
 	optionId: zod.string().uuid(),
 	optionName: zod.string(),
 	content: zod.string(),
 });
 
-const SelectSurveyParser = zod.array(
-	zod.object({
-		survey: SurveySchema,
-		options: OptionsSchema,
-	}),
-);
+type SurveyChoicesType = zod.infer<typeof ChoicesTypeSchema>;
+type Survey = zod.infer<typeof SurveySchema>;
+type Option = zod.infer<typeof OptionSchema>;
 
-export { SelectSurveyParser, OptionsSchema, SurveySchema };
+export type { Option, Survey, SurveyChoicesType };
+export { ChoicesTypeSchema, OptionSchema, SurveySchema };
