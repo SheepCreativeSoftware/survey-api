@@ -2,7 +2,7 @@ import http from 'node:http';
 import { buntstift } from 'buntstift';
 import { getApi } from './api/getApi';
 import { initDatabase } from './database/initDefaultDatabase';
-import { closeConnection } from './database/connectDatabase';
+import { closeConnection, getConnection } from './database/connectDatabase';
 
 /** No unnecessary output to console in production */
 if (process.env.NODE_ENV === 'development') {
