@@ -42,7 +42,7 @@ const getApi = (): Application => {
 	);
 
 	// Setup user authentification routes and authorization middleware
-	app.use(securityRoutes);
+	app.use('/api/v1/security', securityRoutes);
 	app.use(jwtAuthorizationHandler());
 
 	// Setup Protected Routes

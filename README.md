@@ -9,7 +9,7 @@ The user can view and manage surveys.
 
 
 ## API Routes
-Defined with (Currently not up to date): [Swagger UI](https://sheepcreativesoftware.github.io/swagger-survey-api/)
+Defined with (Currently representing an outdated state): [Swagger UI](https://sheepcreativesoftware.github.io/swagger-survey-api/)
 
 ### Security
 - Commands:
@@ -27,37 +27,11 @@ Defined with (Currently not up to date): [Swagger UI](https://sheepcreativesoftw
 	- GET /open-surveys => results
 	- GET /completed-surveys => results
 
+### Answer (requires answer access token)
+- Not yet defined
 
-## Database structure
-### Table User
-- user_id: int [PK] (AUTO INCREMENTS),
-- first_name: VARCHAR(50) REQUIRED,
-- last_name: VARCHAR(50) REQUIRED,
-- email: VARCHAR(50) REQUIRED UNIQUE,
-- password: VARCHAR(50) REQUIRED
-- active: BOOLEAN
-
-### Table survey
-- survey_id: int [PK] (AUTO INCREMENTS),
-- user_id: int REQURED,
-- survey_name: TINYTEXT REQUIRED,
-- survey_description: TEXT REQUIRED,
-- created: DATETIME, (defaults),
-- choices_type: TINYTEXT REQUIRED,
-- end_date: DATETIME REQUIRED,
-- completed: BOOLEAN
-
-### Table options
-- survey_id: REFERENCES TO survey(survey_id),
-- option_id: VARCHAR(36) UUID,
-- option_name: TINYTEXT REQUIRED,
-- content: TEXT REQUIRED,
-
-### Table results
-- survey_id: REFERENCES TO survey(survey_id),
-- result_id: VARCHAR(36) UUID,
-- option_selection: JSON REQUIRED (Array of option_id),
-- submited: DATETIME (current timestamp of creation)
+### Results
+- Not yet defined
 
 ## Setup
 Requires a relational SQL Database (Designed to run on MariaDB min-version: 10.11.x)
@@ -78,5 +52,5 @@ Requires a relational SQL Database (Designed to run on MariaDB min-version: 10.1
 **DATABASE_USER**=root  
 **DATABASE_PASSWORD** e.g. supersecretpassword  
 **DATABASE_NAME** e.g. database0815  
-**DATABASE_CON_TIMEOUT** e.g. time in milliseconds DB stop connection to DB
+**DATABASE_CON_TIMEOUT** e.g. time in seconds DB stop connection to DB (optional)
 

@@ -4,7 +4,7 @@ import { loginUserHandle } from './login-user/handle';
 
 const router = express.Router();
 
-router.post('/api/v1/security/register-user', registerUserHandle());
-router.post('/api/v1/security/login-user', loginUserHandle());
+router.post('/register-user', registerUserHandle());
+router.post('/login-user', loginUserHandle());
 
 export { router as securityRoutes };
