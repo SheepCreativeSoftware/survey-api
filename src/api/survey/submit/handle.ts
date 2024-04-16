@@ -3,7 +3,6 @@ import type { Handler } from 'express';
 import type { z as zod } from 'zod';
 import { addOptionToDb } from '../../../database/options/optionsDb';
 import { addSurveyToDb } from '../../../database/survey/surveyDb';
-import { handleErrorResponse } from '../../../modules/handler/handleErrorResponse';
 import { handleCreationResponse } from '../../../modules/handler/handleSuccessResponse';
 import { getToken } from '../../../modules/misc/createToken';
 import { checkSurveySubmitObject } from '../../../modules/protection/zodRules';
@@ -36,13 +35,13 @@ const createNewSurvey = async (response: CreateSurvey) => {
 };
 
 const submitHandle = (): Handler => {
-	return async (req, res) => {
+	return async (req, res, next) => {
 		try {
 			const response = checkSurveySubmitObject.parse(req.body);
 			const { creationToken, optionIds } = await createNewSurvey(response);
 			handleCreationResponse(req, res, { creationToken, optionIds });
 		} catch (error) {
-			handleErrorResponse(req, res, error);
+			next(error);
 		}
 	};
 };

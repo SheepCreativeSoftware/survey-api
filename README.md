@@ -2,38 +2,36 @@
 simple API to generate and manage a simple survey.  
 This project is mainly focused on enhancing knowledge and learnig new things, while working with them.  
 
-The API automatically connects to a SQL Database (MariaDB) and creates necessary tables.
-It is designed to run behind an ngnix proxy (which will later provide a frontend).
-A user can create a survey, which provides him a creationToken. The creationToken is used to manage a survey and is like some kind of authorization (No extra user registration/login/identification).
-Later on a publicToken is used to open a existing survey and answer it.
+The API follows the CQRS Pattern with Commands and Queries instead of simple REST API.
+A User is able to register an account at the server.
+With this account the user can authenticate which will provide him a JWT which can be used as Bearer Token on creational routes.  
+The user can view and manage surveys.  
 
 
 ## API Routes
-Defined with: [Swagger UI](https://sheepcreativesoftware.github.io/swagger-survey-api/)
+Defined with (Currently representing an outdated state): [Swagger UI](https://sheepcreativesoftware.github.io/swagger-survey-api/)
 
-## Database structure
-### Table survey
-- survey_id: int [PK] (AUTO INCREMENTS),
-- survey_name: TINYTEXT REQUIRED,
-- survey_description: TEXT REQUIRED,
-- creator_name: TINYTEXT REQUIRED,
-- created: DATETIME, (defaults),
-- choices_type: TINYTEXT REQUIRED,
-- end_date: DATETIME REQUIRED,
-- creation_token: base64url Hash UNIQUE REQUIRED,
-- public_token: base64url Hash UNIQUE REQUIRED,
+### Security
+- Commands:
+	- POST /security/register
+	- POST /security/login => token (creator access token)
+- Queries
+	- none
 
-### Table options
-- survey_id: REFERENCES TO survey(survey_id),
-- option_id: VARCHAR(36) UUID,
-- option_name: TINYTEXT REQUIRED,
-- content: TEXT REQUIRED,
+### Survey List (requires creator access token)
+- Commands:
+	- POST /create-survey => { id, options[id] }
+	- POST /adjust-survey
+	- POST /complete-survey 
+- Queries
+	- GET /open-surveys => results
+	- GET /completed-surveys => results
 
-### Table sessions
-- survey_id: REFERENCES TO survey(survey_id),
-- session_id: VARCHAR(36) UUID,
-- option_selection: JSON REQUIRED (Array of option_id),
-- submited: DATETIME (current timestamp of creation)
+### Answer (requires answer access token)
+- Not yet defined
+
+### Results
+- Not yet defined
 
 ## Setup
 Requires a relational SQL Database (Designed to run on MariaDB min-version: 10.11.x)
@@ -54,5 +52,5 @@ Requires a relational SQL Database (Designed to run on MariaDB min-version: 10.1
 **DATABASE_USER**=root  
 **DATABASE_PASSWORD** e.g. supersecretpassword  
 **DATABASE_NAME** e.g. database0815  
-**DATABASE_CON_TIMEOUT** e.g. time in milliseconds DB stop connection to DB
+**DATABASE_CON_TIMEOUT** e.g. time in seconds DB stop connection to DB (optional)
 

@@ -3,7 +3,15 @@ type StatusObject = {
 	statusCode: number;
 };
 
-type StatusCodes = 'okay' | 'created' | 'badRequest' | 'forbidden' | 'notFound' | 'internalError';
+type StatusCodes =
+	| 'okay'
+	| 'created'
+	| 'conflict'
+	| 'badRequest'
+	| 'forbidden'
+	| 'notFound'
+	| 'internalError'
+	| 'unauthorized';
 
 type StatusCodeObject = {
 	[Key in StatusCodes]: StatusObject;
@@ -22,6 +30,10 @@ const statusCode: StatusCodeObject = {
 		status: 'Bad Request',
 		statusCode: 400,
 	},
+	unauthorized: {
+		status: 'Unauthorized',
+		statusCode: 401,
+	},
 	forbidden: {
 		status: 'Forbidden',
 		statusCode: 403,
@@ -29,6 +41,10 @@ const statusCode: StatusCodeObject = {
 	notFound: {
 		status: 'Not Found',
 		statusCode: 404,
+	},
+	conflict: {
+		status: 'Conflict',
+		statusCode: 409,
 	},
 	internalError: {
 		status: 'Internal Server Error',

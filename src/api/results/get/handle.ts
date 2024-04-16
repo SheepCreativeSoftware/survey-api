@@ -1,11 +1,10 @@
 import type { Handler } from 'express';
 import { getSessionFromDb } from '../../../database/sessions/sessionsDb';
-import { handleErrorResponse } from '../../../modules/handler/handleErrorResponse';
 import { handleSuccessResponse } from '../../../modules/handler/handleSuccessResponse';
 import { checkCreationTokenObject } from '../../../modules/protection/zodRules';
 
 const getHandle = (): Handler => {
-	return async (req, res) => {
+	return async (req, res, next) => {
 		try {
 			const { creationToken } = checkCreationTokenObject.parse(req.query);
 
@@ -13,7 +12,7 @@ const getHandle = (): Handler => {
 
 			handleSuccessResponse(req, res, { surveyResults });
 		} catch (error) {
-			handleErrorResponse(req, res, error);
+			next(error);
 		}
 	};
 };
