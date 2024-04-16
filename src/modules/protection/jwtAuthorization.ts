@@ -23,8 +23,14 @@ const jwtAuthorizationHandler = (): Handler => {
 			const user = await verifyJwtToken(token);
 			req.user = user;
 			loginStatus = true;
+			next();
 		} catch (error) {
-			return next(error);
+			if (error instanceof Error) {
+				return next(
+					new Error('Unauthorized', { cause: `Invalid Token: ${error.message}` }),
+				);
+			}
+			next(error);
 		}
 	};
 };
