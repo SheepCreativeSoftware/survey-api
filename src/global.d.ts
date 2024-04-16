@@ -5,13 +5,12 @@ declare global {
 	namespace Express {
 		interface User {
 			userId: UUID;
-			email: string;
-			firstName: string;
-			lastName: string;
+			role: 'Creator' | 'Answerer';
 		}
 
 		interface Request {
 			user?: User | undefined;
+			isLoggedIn: undefined | (() => boolean);
 		}
 	}
 }

@@ -10,7 +10,8 @@ type StatusCodes =
 	| 'badRequest'
 	| 'forbidden'
 	| 'notFound'
-	| 'internalError';
+	| 'internalError'
+	| 'unauthorized';
 
 type StatusCodeObject = {
 	[Key in StatusCodes]: StatusObject;
@@ -28,6 +29,10 @@ const statusCode: StatusCodeObject = {
 	badRequest: {
 		status: 'Bad Request',
 		statusCode: 400,
+	},
+	unauthorized: {
+		status: 'Unauthorized',
+		statusCode: 401,
 	},
 	forbidden: {
 		status: 'Forbidden',
