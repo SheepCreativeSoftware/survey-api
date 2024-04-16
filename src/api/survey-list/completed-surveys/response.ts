@@ -2,7 +2,7 @@ import { z as zod } from 'zod';
 import { OptionSchema, SurveySchema } from '../SurveySchema';
 
 const ResponseBodyParser = zod.array(
-	SurveySchema.extend({
+	SurveySchema.omit({ completed: true }).extend({
 		options: zod.array(OptionSchema),
 	}),
 );

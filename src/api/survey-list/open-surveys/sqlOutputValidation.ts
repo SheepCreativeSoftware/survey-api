@@ -1,27 +1,11 @@
 import { z as zod } from 'zod';
-
-const ChoicesTypeSchema = zod.union([zod.literal('single'), zod.literal('multiple')]);
-
-const SurveySchema = zod.object({
-	surveyId: zod.string().uuid(),
-	surveyName: zod.string(),
-	surveyDescription: zod.string(),
-	choicesType: ChoicesTypeSchema,
-	created: zod.date(),
-	endDate: zod.date(),
-});
-
-const OptionsSchema = zod.object({
-	optionId: zod.string().uuid(),
-	optionName: zod.string(),
-	content: zod.string(),
-});
+import { SurveySchema, OptionSchema } from '../SurveySchema';
 
 const SelectSurveyParser = zod.array(
 	zod.object({
-		survey: SurveySchema,
-		options: OptionsSchema,
+		survey: SurveySchema.omit({ completed: true }),
+		options: OptionSchema,
 	}),
 );
 
-export { SelectSurveyParser, OptionsSchema, SurveySchema };
+export { SelectSurveyParser };

@@ -13,6 +13,7 @@ interface SurveyOptions {
 interface SurveyCreationOptions extends SurveyOptions {
 	surveyId: UUID | null;
 	created: Date;
+	completed: boolean;
 }
 
 class Survey {
@@ -22,6 +23,7 @@ class Survey {
 	private choicesType: ChoicesType = 'single';
 	private created: Date | null = null;
 	private endDate: Date | null = null;
+	private completed = false;
 
 	public constructor(options?: SurveyCreationOptions) {
 		if (typeof options === 'undefined') {
@@ -34,6 +36,7 @@ class Survey {
 		this.choicesType = options.choicesType;
 		this.created = options.created;
 		this.endDate = options.endDate;
+		this.completed = options.completed;
 	}
 
 	public getSurveyId(): UUID {
@@ -69,6 +72,14 @@ class Survey {
 		return this.endDate;
 	}
 
+	public isCompleted(): boolean {
+		return this.completed;
+	}
+
+	public setComplete(): void {
+		this.completed = true;
+	}
+
 	public create({ choicesType, endDate, surveyDescription, surveyName }: SurveyOptions) {
 		if (this.surveyId != null) {
 			throw new Error('survey is already created');
@@ -80,6 +91,7 @@ class Survey {
 		this.choicesType = choicesType;
 		this.created = new Date();
 		this.endDate = endDate;
+		this.completed = false;
 	}
 
 	public change({ choicesType, endDate, surveyDescription, surveyName }: SurveyOptions) {

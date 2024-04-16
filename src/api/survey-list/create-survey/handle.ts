@@ -27,8 +27,8 @@ const createSurveyHandler = (): Handler => {
 			const conn = await getConnection();
 			await conn.query(
 				`INSERT INTO survey
-				(user_id, survey_id, survey_name, survey_description, choices_type, end_date, created)
-				VALUES (?, ?, ?, ?, ?, ?, ?)`,
+				(user_id, survey_id, survey_name, survey_description, choices_type, end_date, created, completed)
+				VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
 				[
 					userId,
 					survey.getSurveyId(),
@@ -37,6 +37,7 @@ const createSurveyHandler = (): Handler => {
 					survey.getChoicesType(),
 					survey.getEndDate(),
 					survey.getCreated(),
+					survey.isCompleted(),
 				],
 			);
 

@@ -3,7 +3,7 @@ import { OptionSchema, SurveySchema } from '../SurveySchema';
 
 const SelectSurveyParser = zod.array(
 	zod.object({
-		survey: SurveySchema,
+		survey: SurveySchema.omit({ completed: true }),
 		options: OptionSchema,
 	}),
 );

@@ -6,6 +6,7 @@ import { RequestBodyParser } from './request';
 import { SelectUserParser } from './selectUser';
 import { statusCode } from '../../../modules/misc/statusCodes';
 import { signJwtToken } from '../../../modules/protection/jwtHandling';
+import { tinyToBoolean } from '../../../database/typecast';
 
 const loginUserHandle = (): Handler => {
 	return async (req, res, next) => {
@@ -14,11 +15,12 @@ const loginUserHandle = (): Handler => {
 
 			const conn = await getConnection();
 			const row = await conn.query(
-				`
-				SELECT user_id, email, password, active
-				FROM users
-				WHERE email = ?
-			`,
+				{
+					typeCast: tinyToBoolean,
+					sql: `SELECT user_id, email, password, active
+						FROM users
+						WHERE email = ?`,
+				},
 				[requestBody.email],
 			);
 

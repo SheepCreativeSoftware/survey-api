@@ -9,6 +9,7 @@ const SurveySchema = zod.object({
 	choicesType: ChoicesTypeSchema,
 	created: zod.date(),
 	endDate: zod.date(),
+	completed: zod.boolean(),
 });
 
 const OptionSchema = zod.object({
