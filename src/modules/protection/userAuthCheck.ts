@@ -1,7 +1,7 @@
 import { buntstift } from 'buntstift';
 import type { Handler } from 'express';
 
-const checkUserAuthorizedHandler = (): Handler => {
+const userAuthorizedHandler = (): Handler => {
 	return (req, _res, next) => {
 		if (typeof req.isLoggedIn !== 'function') {
 			buntstift.error('isLoggedIn is not a function');
@@ -15,7 +15,7 @@ const checkUserAuthorizedHandler = (): Handler => {
 	};
 };
 
-const checkCreatorAuthorizedHandler = (): Handler => {
+const creatorAuthorizedHandler = (): Handler => {
 	return (req, _res, next) => {
 		if (req.user?.role === 'Creator') {
 			return next();
@@ -24,7 +24,7 @@ const checkCreatorAuthorizedHandler = (): Handler => {
 	};
 };
 
-const checkAnswererAuthorizedHandler = (): Handler => {
+const answererAuthorizedHandler = (): Handler => {
 	return (req, _res, next) => {
 		if (req.user?.role === 'Answerer') {
 			return next();
@@ -33,8 +33,4 @@ const checkAnswererAuthorizedHandler = (): Handler => {
 	};
 };
 
-export {
-	checkAnswererAuthorizedHandler,
-	checkCreatorAuthorizedHandler,
-	checkUserAuthorizedHandler,
-};
+export { answererAuthorizedHandler, creatorAuthorizedHandler, userAuthorizedHandler };
