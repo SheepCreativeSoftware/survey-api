@@ -85,6 +85,10 @@ class Survey {
 			throw new Error('survey is already created');
 		}
 
+		if (new Date().getTime() >= endDate.getTime()) {
+			throw new Error('Bad Request', { cause: 'End date must be after current date' });
+		}
+
 		this.surveyId = crypto.randomUUID();
 		this.surveyName = surveyName;
 		this.surveyDescription = surveyDescription;
@@ -97,6 +101,10 @@ class Survey {
 	public change({ choicesType, endDate, surveyDescription, surveyName }: SurveyOptions) {
 		if (this.surveyId == null) {
 			throw new Error('survey is not created yet');
+		}
+
+		if (new Date().getTime() >= endDate.getTime()) {
+			throw new Error('Bad Request', { cause: 'End date must be after current date' });
 		}
 
 		this.surveyName = surveyName;
