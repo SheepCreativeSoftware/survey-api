@@ -122,4 +122,5 @@ const restoreSurvey = (options: SurveyCreationOptions) => {
 	return new Survey(options);
 };
 
+export type { SurveyOptions, SurveyCreationOptions };
 export { Survey, newSurvey, restoreSurvey };

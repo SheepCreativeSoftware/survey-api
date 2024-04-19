@@ -11,7 +11,6 @@ import {
 import { answerRoutes } from './answer/router';
 import { publicRoutes } from './public/router';
 import { resultsRoutes } from './results/router';
-import { surveyRoutes } from './survey/surveyRoutes';
 import { securityRoutes } from './security/router';
 import { jwtAuthorizationHandler } from '../modules/protection/jwtAuthorization';
 import {

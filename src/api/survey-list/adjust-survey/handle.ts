@@ -1,14 +1,15 @@
 import type { Handler } from 'express';
 import type { UUID } from 'node:crypto';
-import { RequestBodyParser } from './request';
-import { restoreSurvey } from '../../../domain/survey';
-import { getConnection } from '../../../database/connectDatabase';
-import { tinyToBoolean } from '../../../database/typecast';
-import { SelectSurveyParser } from './sqlOutputValidation';
 import { buntstift } from 'buntstift';
+import { getConnection } from '../../../database/connectDatabase';
+import { RequestBodyParser } from './request';
+import { SelectSurveyParser } from './sqlOutputValidation';
 import { statusCode } from '../../../modules/misc/statusCodes';
+import { tinyToBoolean } from '../../../database/typecast';
+import { updateOptions } from './updateOptions';
+import { updateSurvey } from './updateSurvey';
 
-const completeSurveyHandler = (): Handler => {
+const adjustSurveyHandler = (): Handler => {
 	return async (req, res, next) => {
 		try {
 			if (typeof req.user?.userId === 'undefined') {
@@ -24,12 +25,16 @@ const completeSurveyHandler = (): Handler => {
 					typeCast: tinyToBoolean,
 					sql: `SELECT survey.survey_id as 'surveyId', survey_name as 'surveyName',
 						survey_description as 'surveyDescription', choices_type as 'choicesType',
-						created, end_date as 'endDate', completed
+						created, end_date as 'endDate', completed, option_id as 'optionId',
+						option_name as 'optionName', content
 						FROM survey
-						WHERE survey_id = ?
-						AND user_id = ?`,
+						INNER JOIN options ON survey.survey_id = options.survey_id
+						WHERE user_id = ?
+						AND survey.survey_id = ?
+						AND completed = false`,
+					nestTables: true,
 				},
-				[requestBody.surveyId, userId],
+				[userId, requestBody.surveyId],
 			);
 
 			if (response.length === 0) {
@@ -43,25 +48,26 @@ const completeSurveyHandler = (): Handler => {
 			}
 
 			const { data } = dataFromDb;
-
-			const survey = restoreSurvey({
-				choicesType: data[0].choicesType,
-				created: data[0].created,
-				endDate: data[0].endDate,
-				surveyDescription: data[0].surveyDescription,
-				surveyId: data[0].surveyId as UUID,
-				surveyName: data[0].surveyName,
-				completed: data[0].completed,
-			});
-
-			survey.setComplete();
-
-			conn.query(
-				`UPDATE survey
-				SET completed = ?
-				WHERE survey_id = ?`,
-				[survey.isCompleted(), survey.getSurveyId()],
+			const { survey } = data[0];
+			await updateSurvey(
+				{
+					choicesType: survey.choicesType,
+					surveyId: survey.surveyId as UUID,
+					completed: survey.completed,
+					created: survey.created,
+					endDate: survey.endDate,
+					surveyDescription: survey.surveyDescription,
+					surveyName: survey.surveyName,
+				},
+				{
+					choicesType: requestBody.choicesType,
+					endDate: new Date(requestBody.endDate),
+					surveyDescription: requestBody.surveyDescription,
+					surveyName: requestBody.surveyName,
+				},
 			);
+
+			await updateOptions(data, requestBody.options);
 
 			res.status(statusCode.okay.statusCode).send();
 		} catch (error) {
@@ -70,4 +76,4 @@ const completeSurveyHandler = (): Handler => {
 	};
 };
 
-export { completeSurveyHandler };
+export { adjustSurveyHandler };
