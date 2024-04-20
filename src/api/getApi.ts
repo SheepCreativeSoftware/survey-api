@@ -19,6 +19,13 @@ import {
 import { surveyListRouter } from './survey-list/router';
 import { answerSurveyRoutes } from './answer/router';
 import { surveyResultRoutes } from './survey-result/router';
+import { openApiSpecHandler } from './openAPI/handle';
+
+if (typeof process.env.URL === 'undefined') {
+	throw new Error('Missing URL enviroment parameter');
+}
+
+const url = process.env.URL;
 
 const getApi = (): Application => {
 	const app = express();
@@ -36,9 +43,12 @@ const getApi = (): Application => {
 	// Setup cors protection
 	app.use(
 		cors({
-			origin: process.env.URL,
+			origin: [url],
+			methods: ['GET', 'POST'],
 		}),
 	);
+
+	app.get('/api/open-api-spec', openApiSpecHandler());
 
 	// Setup user authentification routes and authorization middleware
 	app.use(jwtAuthorizationHandler());

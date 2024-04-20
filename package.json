@@ -10,8 +10,7 @@
 		"dev": "npx tsc-watch --noClear -b --onSuccess \"node --env-file=.env dist/app.js\"",
 		"start": "node --env-file=.env dist/app.js",
 		"test": "npx jest --silent",
-		"test:detail": "npx jest --coverage",
-		"postinstall": "npm run build"
+		"test:detail": "npx jest --coverage"
 	},
 	"repository": {
 		"type": "git",

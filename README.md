@@ -12,7 +12,7 @@ The user can create answerer tokens, to share with people that should answer the
 Each answerer token can only be used ones for answering.
 
 ## API Routes
-Defined with: [Swagger UI](https://sheepcreativesoftware.github.io/swagger-survey-api/)
+View Specs with: [Swagger UI](https://survey.sheepcs.de/swagger-ui.html)
 
 ## Setup
 Requires node.js (min-version 20.0.0) a relational SQL Database (Designed to run on MariaDB min-version: 10.11.x)
