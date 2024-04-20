@@ -1,40 +1,36 @@
 # survey-api
-simple API to generate and manage a simple survey.  
+simple API to generate and manage a survey.  
 This project is mainly focused on enhancing knowledge and learnig new things, while working with them.  
 
 The API follows the CQRS Pattern with Commands and Queries instead of simple REST API.
 A User is able to register an account at the server.
-With this account the user can authenticate which will provide him a JWT which can be used as Bearer Token on creational routes.  
-The user can view and manage surveys.  
+With this account the user can authenticate which will provide him a JWT which can be used to authorize with Bearer Token on creational routes.  
+The user can than view and manage surveys.  
 
+After editing of a survey is completed the user can complete the survey, which opens the survey for answering (It can no longer be edited).  
+The user can create answerer tokens, to share with people that should answer the survey.  
+Each answerer token can only be used ones for answering.
 
 ## API Routes
-Defined with (Currently representing an outdated state): [Swagger UI](https://sheepcreativesoftware.github.io/swagger-survey-api/)
-
-### Security
-- Commands:
-	- POST /security/register
-	- POST /security/login => token (creator access token)
-- Queries
-	- none
-
-### Survey List (requires creator access token)
-- Commands:
-	- POST /create-survey => { id, options[id] }
-	- POST /adjust-survey
-	- POST /complete-survey 
-- Queries
-	- GET /open-surveys => results
-	- GET /completed-surveys => results
-
-### Answer (requires answer access token)
-- Not yet defined
-
-### Results
-- Not yet defined
+Defined with: [Swagger UI](https://sheepcreativesoftware.github.io/swagger-survey-api/)
 
 ## Setup
-Requires a relational SQL Database (Designed to run on MariaDB min-version: 10.11.x)
+Requires node.js (min-version 20.0.0) a relational SQL Database (Designed to run on MariaDB min-version: 10.11.x)
+
+**Install**  
+This will install all needed dependencies and build the app
+```bash
+npm i
+```
+
+**Start**  
+It requires enviroment variables or an .env file to run.
+```bash
+npm run start
+# OR
+node node --env-file=.env dist/app.js
+```
+
 ### Environment Variables
 
 #### General
