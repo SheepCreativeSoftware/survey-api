@@ -48,7 +48,7 @@ const getApi = (): Application => {
 		}),
 	);
 
-	app.get('/api/open-api-spec', openApiSpecHandler());
+	app.get('/api/v1/open-api-spec', openApiSpecHandler());
 
 	// Setup user authentification routes and authorization middleware
 	app.use(jwtAuthorizationHandler());

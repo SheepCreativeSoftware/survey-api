@@ -4,7 +4,7 @@ info:
   license:
     name: MIT
     url: https://opensource.org/license/mit/
-  description: 'Simple API to manage a simple survey'
+  description: 'Simple API to manage a survey'
   version: '1.0.0'
 servers:
   - url: https://{subdomain}.sheepcs.de/api/v1
@@ -12,7 +12,7 @@ servers:
     variables:
       subdomain:
         default: survey
-  - url: https://localhost:{port}/api/v1
+  - url: http://localhost:{port}/api/v1
     description: 'Local testing URL'
     variables:
       port:
@@ -23,7 +23,7 @@ paths:
     post:
       tags: 
         - security
-      description: 'Register a new user account on the server'
+      description: 'Registers a new user account on the server'
       requestBody:
         content:
           application/json:
@@ -78,7 +78,7 @@ paths:
     post:
       tags: 
         - security
-      description: 'Login a user account on the server'
+      description: 'Login a user existing account on the server'
       requestBody:
         content:
           application/json:
@@ -104,7 +104,47 @@ paths:
             application/json:
               schema: 
                 type: object
-                description: 'Access token for the user'
+                description: 'Access Creator token for the user'
+                properties:
+                  token:
+                    type: string
+                    format: jwt
+                example: {
+                    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiQ3JlYXRvciIsImlhdCI6MTcxMzUzOTQ4OSwiZXhwIjoxNzEzNTQxMjg5LCJpc3MiOiJsb2NhbGhvc3QiLCJzdWIiOiIxMTAyMTU2ZS1iMWYxLTRlY2YtOTEwYS1mZDAxMmI3ZDhlNDEiLCJqdGkiOiI2NjJjODBmNy1mZDVlLTRkNTItODExNC05ZmZiNDAyYjQ1ZDUifQ.-Dj5uC5mOn2oIC6M3lpCTdMWJbGW1EuDfee4F6BB9C0"
+                }
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '500':
+          $ref: '#/components/responses/500'
+
+  /security/generate-answer-token:
+    post:
+      tags: 
+        - security
+      description: Generates a Access Answerer Token for answering surveys
+      requestBody:
+        content:
+          application/json:
+              schema:
+                type: object
+                description: 'Survey Id for answer'
+                properties:
+                  surveyId:
+                    type: string
+                    format: uuid
+                example: {
+                    "surveyId": "af6f94a5-2cc5-4fac-868a-ab70a5bdc033"
+                }
+      responses:
+        '200':
+          description: 'OK'
+          content:
+            application/json:
+              schema: 
+                type: object
+                description: 'Access Creator token for the user'
                 properties:
                   token:
                     type: string
@@ -125,7 +165,7 @@ paths:
         - survey-list
       description: 'Returns a list of open surveys of that user'
       security:
-        - BearerToken: []
+        - BearerCreatorToken: []
       responses:
         '200':
           description: OK
@@ -137,7 +177,7 @@ paths:
                 items:
                   allOf:
                     - $ref: '#/components/schemas/SurveyWithId'
-                    - $ref: '#/components/schemas/OptionsWithId'
+                    - $ref: '#/components/schemas/OptionsResponse'
         '401':
           $ref: '#/components/responses/401'
         '404':
@@ -151,7 +191,7 @@ paths:
         - survey-list
       description: 'Returns a list of completed surveys of that user'
       security:
-        - BearerToken: []
+        - BearerCreatorToken: []
       responses:
         '200':
           description: OK
@@ -163,7 +203,7 @@ paths:
                 items:
                   allOf:
                     - $ref: '#/components/schemas/SurveyWithId'
-                    - $ref: '#/components/schemas/OptionsWithId'
+                    - $ref: '#/components/schemas/OptionsResponse'
         '401':
           $ref: '#/components/responses/401'
         '404':
@@ -177,21 +217,21 @@ paths:
         - survey-list
       description: 'Creates a new survey'
       security:
-        - BearerToken: []
+        - BearerCreatorToken: []
       requestBody:
         content:
           application/json:
               schema:
                 allOf:
                   - $ref: '#/components/schemas/Survey'
-                  - $ref: '#/components/schemas/Options'
+                  - $ref: '#/components/schemas/OptionsCreation'
       responses:
         '201':
           description: Created
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/SurveyIds'
+                $ref: '#/components/schemas/SurveyCreatedResponse'
         '400':
           $ref: '#/components/responses/400'
         '401':
@@ -205,7 +245,7 @@ paths:
         - survey-list
       description: 'Adjusts parameters of a survey'
       security:
-        - BearerToken: []
+        - BearerCreatorToken: []
       requestBody:
         content:
           application/json:
@@ -230,7 +270,7 @@ paths:
         - survey-list
       description: 'Completes (ends) a survey'
       security:
-        - BearerToken: []
+        - BearerCreatorToken: []
       requestBody:
         content:
           application/json:
@@ -254,11 +294,160 @@ paths:
         '500':
           $ref: '#/components/responses/500'
 
+  /survey-result/open-result:
+    get:
+      tags: 
+        - survey-result
+      description: Returns the results of a survey
+      security:
+        - BearerAnswererToken: []
+        - BearerCreatorToken: []
+      parameters:
+        - in: query
+          name: surveyId
+          schema:
+            type: string
+            format: uuid
+          description: 'Id of the survey (Only required when using Creator Token | Answerer Token already provides a Survey Id)'
+          example: 
+            surveyId: "87145350-a26a-4e59-af19-bb72f25cdb81"
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                description: 'List with result count to each of the options'
+                properties:
+                  surveyId:
+                    type: string
+                    format: uuid
+                  totalCount:
+                    type: number
+                  results:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        optionId:
+                          type: string
+                          format: uuid
+                        resultCount:
+                          type: number
+                example: {
+                      "surveyId": "87145350-a26a-4e59-af19-bb72f25cdb81",
+                      "totalCount": 2,
+                      "results": [
+                          {
+                              "optionId": "583704ab-f5f9-4fbd-84a4-8351758d19ad",
+                              "resultCount": 1
+                          },
+                          {
+                              "optionId": "af6f94a5-2cc5-4fac-868a-ab70a5bdc033",
+                              "resultCount": 1
+                          }
+                      ]
+                  }
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '404':
+          $ref: '#/components/responses/404'
+        '500':
+          $ref: '#/components/responses/500'
 
+  /answer/open-survey:
+    get:
+      tags:
+        - answer
+      description: Returns the survey that is related to the Answerer Token
+      security:
+        - BearerAnswererToken: []
+      responses:
+          '200':
+            description: OK
+            content:
+              application/json:
+                schema:
+                  allOf:
+                    - $ref: '#/components/schemas/SurveyWithId'
+                    - $ref: '#/components/schemas/OptionsResponse'
+          '401':
+            $ref: '#/components/responses/401'
+          '404':
+            $ref: '#/components/responses/404'
+          '500':
+            $ref: '#/components/responses/500'
+
+  /answer/answer-survey:
+    post:
+      tags:
+        - answer
+      description: Answers the survey that is related to the Answerer Token (Can only be used once per Answerer Token)
+      security:
+        - BearerAnswererToken: []
+      responses:
+          '200':
+            description: OK
+            content:
+              application/json:
+                schema:
+                  description: Depending on the suvery choice type, it requieres either an array of options or a single option
+                  oneOf:
+                    - type: object
+                      properties:
+                        optionId:
+                          type: string
+                          format: uuid
+                      example: {
+                            "optionId": "fced3fe3-bcea-4b2d-9e8b-9920ae963f5c"
+                        }
+                    - type: array
+                      items:
+                        type: object
+                        properties:
+                          optionId:
+                            type: string
+                            format: uuid
+                      example: [
+                            {
+                                "optionId": "583704ab-f5f9-4fbd-84a4-8351758d19ad"
+                            },
+                            {
+                                "optionId": "af6f94a5-2cc5-4fac-868a-ab70a5bdc033"
+                            }
+                        ]
+          '401':
+            $ref: '#/components/responses/401'
+          '404':
+            $ref: '#/components/responses/404'
+          '409':
+            $ref: '#/components/responses/409'
+          '500':
+            $ref: '#/components/responses/500'
+
+  /open-api-spec:
+    get:
+      tags:
+        - open-api-spec
+      description: Shows this Open API specification
+      responses:
+        '200':
+          description: OK
+          content:
+            text/yaml:
+              schema:
+                description: Shows this Open API specification
 
 components:
   securitySchemes:
-    BearerToken:
+    BearerCreatorToken:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+    BearerAnswererToken:
       type: http
       scheme: bearer
       bearerFormat: JWT
@@ -273,39 +462,6 @@ components:
           format: uuid
       example:
         id: 'f197ea8b-da1b-4197-8cbd-600733ce6c45'
-
-    Options:
-      type: object
-      description: 'Different options of the survey'
-      required:
-        - options
-      properties:
-        options:
-          type: array
-          minItems: 2
-          items:
-            type: object
-            required:
-              - optionName
-              - content
-            properties:
-              optionName:
-                description: 'Question of the option'
-                type: string
-              content: 
-                description: 'Additional context of the survey'
-                type: string
-      example:
-        options: [
-          {
-            optionName: 'Choice Name 1',
-            content: 'Context of the choice'
-          },
-          {
-            optionName: 'Choice Name 2',
-            content: 'Context of the choice'
-          }
-        ]
 
     Survey:
       type: object
@@ -379,7 +535,7 @@ components:
             "endDate": "2024-05-03T23:00:00.000Z",
         }
 
-    SurveyIds:
+    SurveyCreatedResponse:
       type: object
       description: 'The Ids of the survey for later editing'
       required:
@@ -409,7 +565,40 @@ components:
             ]
         }
 
-    OptionsWithId:
+    OptionsCreation:
+      type: object
+      description: 'Different options of the survey'
+      required:
+        - options
+      properties:
+        options:
+          type: array
+          minItems: 2
+          items:
+            type: object
+            required:
+              - optionName
+              - content
+            properties:
+              optionName:
+                description: 'Question of the option'
+                type: string
+              content: 
+                description: 'Additional context of the survey'
+                type: string
+      example:
+        options: [
+          {
+            optionName: 'Choice Name 1',
+            content: 'Context of the choice'
+          },
+          {
+            optionName: 'Choice Name 2',
+            content: 'Context of the choice'
+          }
+        ]
+
+    OptionsResponse:
       type: object
       description: 'Different options of the survey'
       required:
