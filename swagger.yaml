@@ -3,7 +3,7 @@ info:
   title: Survey API
   license:
     name: MIT
-    url: https://opensource.org/license/mit/
+    url: https://github.com/SheepCreativeSoftware/survey-api/blob/main/LICENSE
   description: 'Simple API to manage a survey'
   version: '1.0.0'
 servers:
