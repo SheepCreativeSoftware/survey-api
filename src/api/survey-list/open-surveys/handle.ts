@@ -8,7 +8,7 @@ import { statusCode } from '../../../modules/misc/statusCodes';
 const openSurveysHandler = (): Handler => {
 	return async (req, res, next) => {
 		try {
-			if (typeof req.user?.userId === 'undefined') {
+			if (req.user?.role === 'Answerer' || typeof req.user?.userId === 'undefined') {
 				throw new Error('Unauthorized', { cause: 'User is not logged in' });
 			}
 

@@ -3,10 +3,18 @@ import type { UUID } from 'node:crypto';
 declare global {
 	// biome-ignore lint/style/noNamespace: Necessary because express is using it
 	namespace Express {
-		interface User {
+		interface CreatorUser {
+			role: 'Creator';
 			userId: UUID;
-			role: 'Creator' | 'Answerer';
 		}
+
+		interface AnswererUser {
+			role: 'Answerer';
+			surveyId: UUID;
+			endDate: string;
+		}
+
+		type User = CreatorUser | AnswererUser;
 
 		interface Request {
 			user?: User | undefined;

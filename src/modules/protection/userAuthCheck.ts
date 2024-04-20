@@ -33,4 +33,18 @@ const answererAuthorizedHandler = (): Handler => {
 	};
 };
 
-export { answererAuthorizedHandler, creatorAuthorizedHandler, userAuthorizedHandler };
+const creatorOrAnswererAuthorizedHandler = (): Handler => {
+	return (req, _res, next) => {
+		if (req.user?.role === 'Answerer' || req.user?.role === 'Creator') {
+			return next();
+		}
+		return next(new Error('Forbidden', { cause: 'User has no access privilidges' }));
+	};
+};
+
+export {
+	answererAuthorizedHandler,
+	creatorAuthorizedHandler,
+	creatorOrAnswererAuthorizedHandler,
+	userAuthorizedHandler,
+};

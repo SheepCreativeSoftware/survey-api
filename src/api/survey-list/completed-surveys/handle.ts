@@ -8,7 +8,7 @@ import { statusCode } from '../../../modules/misc/statusCodes';
 const completedSurveysHandler = (): Handler => {
 	return async (req, res, next) => {
 		try {
-			if (typeof req.user?.userId === 'undefined') {
+			if (req.user?.role === 'Answerer' || typeof req.user?.userId === 'undefined') {
 				throw new Error('Unauthorized', { cause: 'User is not logged in' });
 			}
 
@@ -16,9 +16,10 @@ const completedSurveysHandler = (): Handler => {
 			const conn = await getConnection();
 			const response = await conn.query(
 				{
-					sql: `SELECT survey.survey_id as 'surveyId', survey_name as 'surveyName',
-						survey_description as 'surveyDescription', choices_type as 'choicesType',
-						created, end_date as 'endDate', option_id as 'optionId', option_name as 'optionName', content
+					sql: `SELECT survey.survey_id as 'surveyId', survey.survey_name as 'surveyName',
+						survey.survey_description as 'surveyDescription', survey.choices_type as 'choicesType',
+						survey.created, survey.end_date as 'endDate',
+						options.option_id as 'optionId', options.option_name as 'optionName', options.content
 						FROM survey
 						INNER JOIN options ON survey.survey_id = options.survey_id
 						WHERE user_id = ?

@@ -42,7 +42,7 @@ const loginUserHandle = (): Handler => {
 				throw new Error('Forbidden', { cause: 'Credentials are wrong' });
 			}
 
-			const token = await signJwtToken(userFromDb.data.user_id, 'Creator');
+			const token = await signJwtToken({ role: 'Creator', userId: userFromDb.data.user_id });
 			res.status(statusCode.okay.statusCode).send({ token });
 		} catch (error) {
 			next(error);
