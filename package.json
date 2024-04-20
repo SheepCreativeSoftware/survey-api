@@ -7,9 +7,11 @@
 		"clean": "rm -rf dist/*",
 		"prebuild": "npm run clean",
 		"build": "npx tsc -b",
-		"start": "npx tsc-watch --noClear -b --onSuccess \"node --env-file=.env dist/app.js\"",
+		"dev": "npx tsc-watch --noClear -b --onSuccess \"node --env-file=.env dist/app.js\"",
+		"start": "node --env-file=.env dist/app.js",
 		"test": "npx jest --silent",
-		"test:detail": "npx jest --coverage"
+		"test:detail": "npx jest --coverage",
+		"postinstall": "npm run build"
 	},
 	"repository": {
 		"type": "git",
