@@ -1,12 +1,10 @@
 import express from 'express';
-import { submitHandle } from './submit/handle';
+import { openSurveyHandler } from './open-survey/handle';
+import { answerSurveyHandler } from './answer-survey/handle';
 
 const router = express.Router();
 
-/**
- * Creates a new Survey which can be referenced to for options etc.
- */
+router.post('/answer-survey', answerSurveyHandler());
+router.get('/open-survey', openSurveyHandler());
 
-router.post('/submit', submitHandle());
-
-export { router as answerRoutes };
+export { router as answerSurveyRoutes };

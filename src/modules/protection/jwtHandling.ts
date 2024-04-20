@@ -39,8 +39,8 @@ const signJwtToken = (
 		payload.surveyId = options.surveyId;
 		payload.endDate = options.endDate.toISOString();
 
-		// Expiration of Answerer token is based on the end of a survey
-		payload.exp = options.endDate.getTime() / 1000;
+		// Expiration of Answerer token is based on the end of a survey + 14 days
+		payload.exp = options.endDate.getTime() / 1000 + 14 * 24 * 60 * 60;
 	}
 
 	if (options.role === 'Creator' && payload.role === 'Creator') {
@@ -87,6 +87,7 @@ const verifyJwtToken = (token: string): Promise<Express.User> => {
 					role: payload.role,
 					surveyId: payload.surveyId,
 					endDate: payload.endDate,
+					answererId: payload.jti as UUID,
 				});
 			}
 		});

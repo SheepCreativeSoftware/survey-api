@@ -1,6 +1,6 @@
+import type { Application } from 'express';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
-import type { Application } from 'express';
 import express from 'express';
 import {
 	clientErrorHandler,
@@ -8,17 +8,17 @@ import {
 	logOnError,
 	notFoundHandler,
 } from '../modules/handler/errorHandlers';
-import { answerRoutes } from './answer/router';
-import { publicRoutes } from './public/router';
-import { resultsRoutes } from './results/router';
 import { securityRoutes } from './security/router';
 import { jwtAuthorizationHandler } from '../modules/protection/jwtAuthorization';
 import {
 	answererAuthorizedHandler,
 	creatorAuthorizedHandler,
+	creatorOrAnswererAuthorizedHandler,
 	userAuthorizedHandler,
 } from '../modules/protection/userAuthCheck';
 import { surveyListRouter } from './survey-list/router';
+import { answerSurveyRoutes } from './answer/router';
+import { surveyResultRoutes } from './survey-result/router';
 
 const getApi = (): Application => {
 	const app = express();
@@ -41,16 +41,14 @@ const getApi = (): Application => {
 	);
 
 	// Setup user authentification routes and authorization middleware
-	app.use('/api/v1/security', securityRoutes);
 	app.use(jwtAuthorizationHandler());
+	app.use('/api/v1/security', securityRoutes);
 
 	// Setup Protected Routes
-	//app.use('/api/v1/', publicRoutes);
 	app.use(userAuthorizedHandler());
 	app.use('/api/v1/survey-list', creatorAuthorizedHandler(), surveyListRouter);
-	//app.use('/api/v1/survey', surveyRoutes);
-	//app.use('/api/v1/results', userAuthorizedHandler(), resultsRoutes);
-	//app.use('/api/v1/answer', answererAuthorizedHandler(), answerRoutes);
+	app.use('/api/v1/survey-result', creatorOrAnswererAuthorizedHandler(), surveyResultRoutes);
+	app.use('/api/v1/answer', answererAuthorizedHandler(), answerSurveyRoutes);
 
 	// Handle errors
 	app.use(logOnError);

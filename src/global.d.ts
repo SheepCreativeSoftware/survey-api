@@ -12,6 +12,7 @@ declare global {
 			role: 'Answerer';
 			surveyId: UUID;
 			endDate: string;
+			answererId: UUID;
 		}
 
 		type User = CreatorUser | AnswererUser;
