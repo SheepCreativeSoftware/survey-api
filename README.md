@@ -15,12 +15,13 @@ Each answerer token can only be used ones for answering.
 View Specs with: [Swagger UI](https://survey.sheepcs.de/swagger-ui.html)
 
 ## Setup
-Requires node.js (min-version 20.0.0) a relational SQL Database (Designed to run on MariaDB min-version: 10.11.x)
+Requires node.js (min-version: 20.0.0) a relational SQL Database (Designed to run on MariaDB min-version: 10.11.x)
 
 **Install**  
 This will install all needed dependencies and build the app
 ```bash
-npm i
+npm install
+npm run build
 ```
 
 **Start**  
@@ -28,7 +29,7 @@ It requires enviroment variables or an .env file to run.
 ```bash
 npm run start
 # OR
-node node --env-file=.env dist/app.js
+node --env-file=.env dist/app.js
 ```
 
 ### Environment Variables
