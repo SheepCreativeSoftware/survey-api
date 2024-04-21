@@ -309,8 +309,8 @@ paths:
             type: string
             format: uuid
           description: 'Id of the survey (Only required when using Creator Token | Answerer Token already provides a Survey Id)'
-          example: 
-            surveyId: "87145350-a26a-4e59-af19-bb72f25cdb81"
+          example: 87145350-a26a-4e59-af19-bb72f25cdb81
+          required: false
       responses:
         '200':
           description: OK
