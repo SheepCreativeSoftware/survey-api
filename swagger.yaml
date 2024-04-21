@@ -7,9 +7,11 @@ info:
   description: 'Simple API to manage a survey'
   version: '1.0.0'
 servers:
-  - url: https://{subdomain}.sheepcs.de/api/v1
+  - url: https://{subdomain}.{domain}/api/v1
     description: 'Public URL'
     variables:
+      domain:
+        default: sheepcs.de
       subdomain:
         default: survey
   - url: http://localhost:{port}/api/v1
@@ -42,6 +44,8 @@ paths:
                   email:
                     type: string
                     format: email
+                    minLength: 1
+                    maxLength: 50
                   password:
                     type: string
                     minLength: 8
@@ -89,6 +93,8 @@ paths:
                   email:
                     type: string
                     format: email
+                    minLength: 1
+                    maxLength: 50
                   password:
                     type: string
                     minLength: 8
