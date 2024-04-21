@@ -189,7 +189,7 @@ paths:
     get:
       tags:
         - survey-list
-      description: 'Returns a list of completed surveys of that user'
+      description: 'Returns a list of completed surveys (open for answering) of that user'
       security:
         - BearerCreatorToken: []
       responses:
@@ -268,7 +268,7 @@ paths:
     post:
       tags:
         - survey-list
-      description: 'Completes (ends) a survey'
+      description: 'Completes a survey / Opens them for answering'
       security:
         - BearerCreatorToken: []
       requestBody:
@@ -640,7 +640,7 @@ components:
 
     OptionsAdjust:
       type: object
-      description: 'Removes Options from the survey'
+      description: 'Adjusts Options from the survey'
       required:
         - options
       properties:
@@ -664,7 +664,7 @@ components:
                 description: 'Additional context of the survey'
                 type: string
               status: 
-                description: 'Delete this item'
+                description: 'Defines what kind of adjustment should be done'
                 type: string
                 enum:
                   - 'Delete'
