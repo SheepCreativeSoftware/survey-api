@@ -656,6 +656,13 @@ components:
               optionId:
                 type: string
                 format: uuid
+                description: 'Id of that option'
+              optionName:
+                description: 'Question of the option'
+                type: string
+              content: 
+                description: 'Additional context of the survey'
+                type: string
               status: 
                 description: 'Delete this item'
                 type: string
