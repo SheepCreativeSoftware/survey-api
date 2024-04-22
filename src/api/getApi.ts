@@ -1,25 +1,25 @@
 import type { Application } from 'express';
-import cookieParser from 'cookie-parser';
-import cors from 'cors';
-import express from 'express';
-import {
-	clientErrorHandler,
-	errorHandler,
-	logOnError,
-	notFoundHandler,
-} from '../modules/handler/errorHandlers';
-import { securityRoutes } from './security/router';
-import { jwtAuthorizationHandler } from '../modules/protection/jwtAuthorization';
 import {
 	answererAuthorizedHandler,
 	creatorAuthorizedHandler,
 	creatorOrAnswererAuthorizedHandler,
 	userAuthorizedHandler,
 } from '../modules/protection/userAuthCheck';
-import { surveyListRouter } from './survey-list/router';
+import {
+	clientErrorHandler,
+	errorHandler,
+	logOnError,
+	notFoundHandler,
+} from '../modules/handler/errorHandlers';
 import { answerSurveyRoutes } from './answer/router';
-import { surveyResultRoutes } from './survey-result/router';
+import { jwtAuthorizationHandler } from '../modules/protection/jwtAuthorization';
 import { openApiSpecHandler } from './openAPI/handle';
+import { securityRoutes } from './security/router';
+import { surveyListRouter } from './survey-list/router';
+import { surveyResultRoutes } from './survey-result/router';
+import cookieParser from 'cookie-parser';
+import cors from 'cors';
+import express from 'express';
 
 if (typeof process.env.URL === 'undefined') {
 	throw new Error('Missing URL enviroment parameter');

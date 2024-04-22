@@ -1,23 +1,28 @@
 import type { Handler } from 'express';
 import type { ResultValues } from './insertResultIntoDb';
+import {
+	ConflictException,
+	InternalServerException,
+	NotFoundException,
+	UnauthorizedException,
+} from '../../../modules/misc/customErrors';
 import { buntstift } from 'buntstift';
+import { combineResults } from './combineResults';
 import { getConnection } from '../../../database/connectDatabase';
+import { insertResultIntoDb } from './insertResultIntoDb';
 import { RequestBodyParser } from './request';
 import { SelectSurveyParser } from './sqlOutputValidation';
-import { statusCode } from '../../../modules/misc/statusCodes';
-import { insertResultIntoDb } from './insertResultIntoDb';
-import { combineResults } from './combineResults';
 
 const answerSurveyHandler = (): Handler => {
 	return async (req, res, next) => {
 		try {
 			if (typeof req.user?.role === 'undefined' || req.user.role !== 'Answerer') {
-				throw new Error('Unauthorized', { cause: 'User is not logged in' });
+				throw new UnauthorizedException('User is not logged in');
 			}
 
 			const { answererId, endDate, surveyId } = req.user;
 			if (new Date(endDate) < new Date()) {
-				throw new Error('Conflict', { cause: 'Survey has already ended' });
+				throw new ConflictException('Survey has already ended');
 			}
 
 			const requestBody = RequestBodyParser.parse(req.body);
@@ -34,14 +39,14 @@ const answerSurveyHandler = (): Handler => {
 			);
 
 			if (response.length === 0) {
-				throw new Error('Not Found');
+				throw new NotFoundException();
 			}
 
 			const dataFromDb = SelectSurveyParser.safeParse(response);
 			if (!dataFromDb.success) {
 				buntstift.verbose(JSON.stringify(response));
 				buntstift.error(dataFromDb.error.message);
-				throw new Error('Internal Server Error');
+				throw new InternalServerException();
 			}
 
 			const { data } = dataFromDb;
@@ -50,7 +55,7 @@ const answerSurveyHandler = (): Handler => {
 
 			await insertResultIntoDb(conn, results);
 
-			res.status(statusCode.created.statusCode).send();
+			res.status(201).send();
 		} catch (error) {
 			next(error);
 		}

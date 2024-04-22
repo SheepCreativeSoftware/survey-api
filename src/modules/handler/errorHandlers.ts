@@ -1,9 +1,9 @@
-import type { NextFunction, Request, Response } from 'express';
+import type { ErrorRequestHandler, Handler } from 'express';
 import { buntstift } from 'buntstift';
-import { statusCode } from '../misc/statusCodes';
+import { NetworkException } from '../misc/customErrors';
 import { ZodError } from 'zod';
 
-const logOnError = (err: unknown, _req: Request, _res: Response, next: NextFunction) => {
+const logOnError: ErrorRequestHandler = (err, _req, _res, next) => {
 	if (err instanceof Error) {
 		buntstift.error(`${err.name}: ${err.message}`);
 		if (err.stack) {
@@ -17,36 +17,35 @@ const logOnError = (err: unknown, _req: Request, _res: Response, next: NextFunct
 };
 
 // Handle unknown routes error
-const notFoundHandler = (_req: Request, res: Response) => {
-	res.status(statusCode.notFound.statusCode).send(statusCode.notFound);
+const notFoundHandler: Handler = (_req, res) => {
+	res.status(404).send({
+		error: 'Not Found',
+		statusCode: 404,
+	});
 };
 
 // Handle Client Errors in middlewares
-const clientErrorHandler = (err: Error, _req: Request, res: Response, next: NextFunction) => {
+const clientErrorHandler: ErrorRequestHandler = (err, _req, res, next) => {
 	if (err instanceof ZodError) {
-		return res.status(statusCode.badRequest.statusCode).json({ message: err.issues });
+		return res.status(400).json({ message: err.issues });
 	}
-	if (err instanceof Error) {
-		switch (err.message) {
-			case 'Not Found':
-				return res.status(statusCode.notFound.statusCode).send({ message: err.cause });
-			case 'Conflict':
-				return res.status(statusCode.conflict.statusCode).send({ message: err.cause });
-			case 'Bad Request':
-				return res.status(statusCode.badRequest.statusCode).send({ message: err.cause });
-			case 'Forbidden':
-				return res.status(statusCode.forbidden.statusCode).send({ message: err.cause });
-			case 'Unauthorized':
-				return res.status(statusCode.unauthorized.statusCode).send({ message: err.cause });
-		}
+	if (err instanceof NetworkException) {
+		return res.status(err.statusCode).send({
+			error: err.name,
+			message: err.message || undefined,
+			statusCode: err.statusCode,
+		});
 	}
 
 	return next(err);
 };
 
 // Handle unexpected errors
-const errorHandler = (_err: Error, _req: Request, res: Response, _next: NextFunction) => {
-	res.status(statusCode.internalError.statusCode).send(statusCode.internalError);
+const errorHandler: ErrorRequestHandler = (_err, _req, res, _next) => {
+	res.status(500).send({
+		error: 'Internal Server Error',
+		statusCode: 500,
+	});
 };
 
 export { errorHandler, clientErrorHandler, logOnError, notFoundHandler };

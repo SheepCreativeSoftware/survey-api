@@ -1,16 +1,21 @@
 import type { Handler } from 'express';
 import type { UUID } from 'node:crypto';
+import {
+	InternalServerException,
+	NotFoundException,
+	UnauthorizedException,
+} from '../../../modules/misc/customErrors';
+import { buntstift } from 'buntstift';
 import { getConnection } from '../../../database/connectDatabase';
 import { RequestQueryParser } from './request';
 import { SelectSurveyParser } from './sqlValidation';
 import { signJwtToken } from '../../../modules/protection/jwtHandling';
-import { statusCode } from '../../../modules/misc/statusCodes';
 
 const generateAnswerTokenHandler = (): Handler => {
 	return async (req, res, next) => {
 		try {
 			if (req.user?.role === 'Answerer' || typeof req.user?.userId === 'undefined') {
-				throw new Error('Unauthorized', { cause: 'User is not logged in' });
+				throw new UnauthorizedException('User is not logged in');
 			}
 
 			const { userId } = req.user;
@@ -27,12 +32,13 @@ const generateAnswerTokenHandler = (): Handler => {
 			);
 
 			if (response.length === 0) {
-				throw new Error('Not Found');
+				throw new NotFoundException();
 			}
 
 			const dataFromDb = SelectSurveyParser.safeParse(response);
 			if (!dataFromDb.success) {
-				throw new Error('Internal Server Error', { cause: dataFromDb.error });
+				buntstift.error(dataFromDb.error.message);
+				throw new InternalServerException();
 			}
 
 			const { data } = dataFromDb;
@@ -43,7 +49,7 @@ const generateAnswerTokenHandler = (): Handler => {
 				surveyId: data[0].surveyId as UUID,
 			});
 
-			res.status(statusCode.okay.statusCode).send({ token });
+			res.status(200).send({ token });
 		} catch (error) {
 			next(error);
 		}

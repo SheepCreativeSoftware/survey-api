@@ -1,16 +1,16 @@
 import type { Handler } from 'express';
 import type { ResponseBody } from './response';
 import { getConnection } from '../../../database/connectDatabase';
-import { statusCode } from '../../../modules/misc/statusCodes';
-import { RequestBodyParser } from './request';
-import { newSurvey } from '../../../domain/survey';
 import { newOption } from '../../../domain/option';
+import { newSurvey } from '../../../domain/survey';
+import { RequestBodyParser } from './request';
+import { UnauthorizedException } from '../../../modules/misc/customErrors';
 
 const createSurveyHandler = (): Handler => {
 	return async (req, res, next) => {
 		try {
 			if (req.user?.role === 'Answerer' || typeof req.user?.userId === 'undefined') {
-				throw new Error('Unauthorized', { cause: 'User is not logged in' });
+				throw new UnauthorizedException('User is not logged in');
 			}
 			const { userId } = req.user;
 
@@ -86,7 +86,7 @@ const createSurveyHandler = (): Handler => {
 				);
 			}
 
-			res.status(statusCode.created.statusCode).send(responseBody);
+			res.status(201).send(responseBody);
 		} catch (error) {
 			next(error);
 		}

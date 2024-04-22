@@ -6,7 +6,7 @@ const openApiSpecHandler = (): Handler => {
 		try {
 			const openApiFilePath = path.join(__dirname, '..', '..', '..', 'swagger.yaml');
 
-			res.sendFile(openApiFilePath);
+			res.status(200).sendFile(openApiFilePath);
 		} catch (error) {
 			next(error);
 		}

@@ -1,15 +1,20 @@
 import type { Handler } from 'express';
 import type { ResponseBody } from './response';
-import { RequestQueryParser } from './request';
+import {
+	InternalServerException,
+	NotFoundException,
+	UnauthorizedException,
+} from '../../../modules/misc/customErrors';
 import { getConnection } from '../../../database/connectDatabase';
+import { RequestQueryParser } from './request';
 import { SqlResponseParser } from './sqlValidation';
-import { statusCode } from '../../../modules/misc/statusCodes';
+import { buntstift } from 'buntstift';
 
 const openResultHandler = (): Handler => {
 	return async (req, res, next) => {
 		try {
 			if (typeof req.user?.role === 'undefined') {
-				throw new Error('Unauthorized', { cause: 'User is not logged in' });
+				throw new UnauthorizedException('User is not logged in');
 			}
 
 			// Survey Id must be provided or is provided as part of answerer token
@@ -32,12 +37,13 @@ const openResultHandler = (): Handler => {
 			);
 
 			if (response.length === 0) {
-				throw new Error('Not Found');
+				throw new NotFoundException();
 			}
 
 			const dataFromDb = SqlResponseParser.safeParse(response);
 			if (!dataFromDb.success) {
-				throw new Error('Internal Server Error', { cause: dataFromDb.error });
+				buntstift.error(dataFromDb.error.message);
+				throw new InternalServerException();
 			}
 
 			const { data } = dataFromDb;
@@ -56,7 +62,7 @@ const openResultHandler = (): Handler => {
 				responseBody.totalCount += Number(row.resultCount);
 			}
 
-			res.status(statusCode.okay.statusCode).send(responseBody);
+			res.status(200).send(responseBody);
 		} catch (error) {
 			next(error);
 		}
