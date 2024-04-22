@@ -57,24 +57,16 @@ paths:
                   "password": "12345678"
                 }
       responses:
-        '200':
-          description: 'OK'
+        '201':
+          description: 'Created'
           content:
             application/json:
               schema: 
                 $ref: '#/components/schemas/UserId'
+        '400':
+          $ref: '#/components/responses/400'
         '409':
-          description: 'Conflict'
-          content:
-            application/json:
-              schema:
-                type: object
-                description: 'Fails if user is already registered'
-                properties:
-                  message:
-                    type: string
-                example:
-                  message: 'Account might already exists'
+          $ref: '#/components/responses/409'
         '500':
           $ref: '#/components/responses/500'
 
@@ -118,6 +110,10 @@ paths:
                 example: {
                     "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiQ3JlYXRvciIsImlhdCI6MTcxMzUzOTQ4OSwiZXhwIjoxNzEzNTQxMjg5LCJpc3MiOiJsb2NhbGhvc3QiLCJzdWIiOiIxMTAyMTU2ZS1iMWYxLTRlY2YtOTEwYS1mZDAxMmI3ZDhlNDEiLCJqdGkiOiI2NjJjODBmNy1mZDVlLTRkNTItODExNC05ZmZiNDAyYjQ1ZDUifQ.-Dj5uC5mOn2oIC6M3lpCTdMWJbGW1EuDfee4F6BB9C0"
                 }
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
         '403':
           $ref: '#/components/responses/403'
         '404':
@@ -130,6 +126,8 @@ paths:
       tags: 
         - security
       description: Generates a Access Answerer Token for answering surveys
+      security:
+        - BearerCreatorToken: []
       requestBody:
         content:
           application/json:
@@ -158,10 +156,10 @@ paths:
                 example: {
                     "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiQ3JlYXRvciIsImlhdCI6MTcxMzUzOTQ4OSwiZXhwIjoxNzEzNTQxMjg5LCJpc3MiOiJsb2NhbGhvc3QiLCJzdWIiOiIxMTAyMTU2ZS1iMWYxLTRlY2YtOTEwYS1mZDAxMmI3ZDhlNDEiLCJqdGkiOiI2NjJjODBmNy1mZDVlLTRkNTItODExNC05ZmZiNDAyYjQ1ZDUifQ.-Dj5uC5mOn2oIC6M3lpCTdMWJbGW1EuDfee4F6BB9C0"
                 }
+        '400':
+          $ref: '#/components/responses/400'
         '403':
           $ref: '#/components/responses/403'
-        '404':
-          $ref: '#/components/responses/404'
         '500':
           $ref: '#/components/responses/500'
 
@@ -394,37 +392,38 @@ paths:
       description: Answers the survey that is related to the Answerer Token (Can only be used once per Answerer Token)
       security:
         - BearerAnswererToken: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              description: Depending on the suvery choice type, it requieres either an array of options or a single option
+              oneOf:
+                - type: object
+                  properties:
+                    optionId:
+                      type: string
+                      format: uuid
+                  example: {
+                        "optionId": "fced3fe3-bcea-4b2d-9e8b-9920ae963f5c"
+                    }
+                - type: array
+                  items:
+                    type: object
+                    properties:
+                      optionId:
+                        type: string
+                        format: uuid
+                  example: [
+                        {
+                            "optionId": "583704ab-f5f9-4fbd-84a4-8351758d19ad"
+                        },
+                        {
+                            "optionId": "af6f94a5-2cc5-4fac-868a-ab70a5bdc033"
+                        }
+                    ]
       responses:
           '200':
             description: OK
-            content:
-              application/json:
-                schema:
-                  description: Depending on the suvery choice type, it requieres either an array of options or a single option
-                  oneOf:
-                    - type: object
-                      properties:
-                        optionId:
-                          type: string
-                          format: uuid
-                      example: {
-                            "optionId": "fced3fe3-bcea-4b2d-9e8b-9920ae963f5c"
-                        }
-                    - type: array
-                      items:
-                        type: object
-                        properties:
-                          optionId:
-                            type: string
-                            format: uuid
-                      example: [
-                            {
-                                "optionId": "583704ab-f5f9-4fbd-84a4-8351758d19ad"
-                            },
-                            {
-                                "optionId": "af6f94a5-2cc5-4fac-868a-ab70a5bdc033"
-                            }
-                        ]
           '401':
             $ref: '#/components/responses/401'
           '404':
@@ -704,10 +703,20 @@ components:
           schema:
             type: object
             properties:
-              message:
+              error:
+                description: Type of Error
                 type: string
-            example:
-              message: 'Reason'
+              message:
+                description: Clear message describing the error (optional)
+                type: string
+              statusCode:
+                description: HTTP Standard Status Code
+                type: number
+            example: {
+              error: "Bad Request",
+              message: "Missing data field in request body",
+              statusCode: 400
+            }
     '401':
       description: 'Unauthorized: The request requires a specific access token to authorize.'
       content:
@@ -715,10 +724,20 @@ components:
           schema:
             type: object
             properties:
-              message:
+              error:
+                description: Type of Error
                 type: string
-            example:
-              message: 'Reason'
+              message:
+                description: Clear message describing the error (optional)
+                type: string
+              statusCode:
+                description: HTTP Standard Status Code
+                type: number
+            example: {
+              error: "Unauthorized",
+              message: "Invalid Token: JWT expired",
+              statusCode: 401
+            }
     '403':
       description: 'Forbidden: The client does not have access rights to the content.'
       content:
@@ -726,10 +745,20 @@ components:
           schema:
             type: object
             properties:
-              message:
+              error:
+                description: Type of Error
                 type: string
-            example:
-              message: 'Reason'
+              message:
+                description: Clear message describing the error (optional)
+                type: string
+              statusCode:
+                description: HTTP Standard Status Code
+                type: number
+            example: {
+              error: "Forbidden",
+              message: "Credentials are wrong",
+              statusCode: 403
+            }
     '404':
       description: 'Not Found: The ressource was not found.'
       content:
@@ -737,10 +766,21 @@ components:
           schema:
             type: object
             properties:
-              message:
+              error:
+                description: Type of Error
                 type: string
-            example:
-              message: 'Reason'
+              message:
+                description: Clear message describing the error (optional)
+                type: string
+              statusCode:
+                description: HTTP Standard Status Code
+                type: number
+            example: {
+              error: "Not Found",
+              message: "Ressouce with ID: xxxx not found",
+              statusCode: 404
+            }
+
     '409':
       description: 'Conflict: There is a conflict with the provided data.'
       content:
@@ -748,10 +788,20 @@ components:
           schema:
             type: object
             properties:
-              message:
+              error:
+                description: Type of Error
                 type: string
-            example:
-              message: 'Reason'
+              message:
+                description: Clear message describing the error (optional)
+                type: string
+              statusCode:
+                description: HTTP Standard Status Code
+                type: number
+            example: {
+              error: "Conflict",
+              message: "Already answered or invalid option",
+              statusCode: 409
+            }
     '500':
       description: 'Internal Server Error: The server has encountered a situation it does not know how to handle.'
       content:
@@ -759,8 +809,17 @@ components:
           schema:
             type: object
             properties:
-              message:
+              error:
+                description: Type of Error
                 type: string
-            example:
-              message: 'Reason'
+              message:
+                description: Clear message describing the error (optional)
+                type: string
+              statusCode:
+                description: HTTP Standard Status Code
+                type: number
+            example: {
+              error: "Internal Server Error",
+              statusCode: 500
+            }
 

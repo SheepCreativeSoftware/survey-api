@@ -1,5 +1,6 @@
 import type { UUID } from 'node:crypto';
 import crypto from 'node:crypto';
+import { ConflictException } from '../modules/misc/customErrors';
 
 interface UserOptions {
 	firstName: string;
@@ -35,7 +36,7 @@ class User {
 
 	public activate() {
 		if (this.userId == null) {
-			throw new Error('Conflict', { cause: 'user is not created yet' });
+			throw new ConflictException('user is not created yet');
 		}
 
 		this.active = true;
