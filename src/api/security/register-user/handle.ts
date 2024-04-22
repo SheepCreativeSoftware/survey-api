@@ -1,10 +1,10 @@
 import type { Handler } from 'express';
 import type { ResponseBody } from './response';
-import { RequestBodyParser } from './request';
-import { newUser } from '../../../domain/user';
-import { hashPassword } from '../../../modules/protection/hashPassword';
+import { ConflictException } from '../../../modules/misc/customErrors';
 import { getConnection } from '../../../database/connectDatabase';
-import { statusCode } from '../../../modules/misc/statusCodes';
+import { hashPassword } from '../../../modules/protection/hashPassword';
+import { newUser } from '../../../domain/user';
+import { RequestBodyParser } from './request';
 import { SqlError } from 'mariadb';
 
 const registerUserHandle = (): Handler => {
@@ -42,10 +42,10 @@ const registerUserHandle = (): Handler => {
 
 			const responseBody: ResponseBody = { id: user.getUserId() };
 
-			res.status(statusCode.created.statusCode).send(responseBody);
+			res.status(201).send(responseBody);
 		} catch (error) {
-			if(error instanceof SqlError) {
-				return next(new Error('Conflict', { cause: 'Account might already exists'}));
+			if (error instanceof SqlError) {
+				return next(new ConflictException('Account might already exists'));
 			}
 			next(error);
 		}

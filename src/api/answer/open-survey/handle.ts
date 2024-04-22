@@ -1,15 +1,19 @@
 import type { Handler } from 'express';
 import type { ResponseBody } from './response';
+import {
+	InternalServerException,
+	NotFoundException,
+	UnauthorizedException,
+} from '../../../modules/misc/customErrors';
 import { buntstift } from 'buntstift';
 import { getConnection } from '../../../database/connectDatabase';
 import { SelectSurveyParser } from './sqlOutputValidation';
-import { statusCode } from '../../../modules/misc/statusCodes';
 
 const openSurveyHandler = (): Handler => {
 	return async (req, res, next) => {
 		try {
 			if (typeof req.user?.role === 'undefined' || req.user.role !== 'Answerer') {
-				throw new Error('Unauthorized', { cause: 'User is not logged in' });
+				throw new UnauthorizedException('User is not logged in');
 			}
 
 			const { surveyId } = req.user;
@@ -31,13 +35,13 @@ const openSurveyHandler = (): Handler => {
 			);
 
 			if (response.length === 0) {
-				throw new Error('Not Found');
+				throw new NotFoundException();
 			}
 
 			const dataFromDb = SelectSurveyParser.safeParse(response);
 			if (!dataFromDb.success) {
 				buntstift.error(dataFromDb.error.message);
-				throw new Error('Internal Server Error');
+				throw new InternalServerException();
 			}
 
 			// Convert One-to-Many relation
@@ -57,7 +61,7 @@ const openSurveyHandler = (): Handler => {
 				responseBody.options.push(options);
 			}
 
-			res.status(statusCode.okay.statusCode).send(responseBody);
+			res.status(200).send(responseBody);
 		} catch (error) {
 			next(error);
 		}

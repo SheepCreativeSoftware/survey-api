@@ -1,5 +1,6 @@
 import type { ResultValues } from './insertResultIntoDb';
 import type { RequestBody } from './request';
+import { ConflictException } from '../../../modules/misc/customErrors';
 
 const combineResults = (
 	choicesType: 'single' | 'multiple',
@@ -18,7 +19,7 @@ const combineResults = (
 	} else if (choicesType === 'single' && !Array.isArray(options)) {
 		results.push({ answererId, optionId: options.optionId });
 	} else {
-		throw new Error('Conflict', { cause: 'Request does not match survey choice type' });
+		throw new ConflictException('Request does not match survey choice type');
 	}
 
 	return results;

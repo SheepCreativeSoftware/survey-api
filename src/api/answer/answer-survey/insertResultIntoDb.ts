@@ -1,5 +1,6 @@
 import { buntstift } from 'buntstift';
 import { SqlError, type Connection } from 'mariadb';
+import { ConflictException } from '../../../modules/misc/customErrors';
 
 type ResultValues = {
 	answererId: string;
@@ -33,7 +34,7 @@ const insertResultIntoDb = async (conn: Connection, results: ResultValues[]) => 
 	} catch (error) {
 		if (error instanceof SqlError) {
 			buntstift.error(error.message);
-			throw new Error('Conflict', { cause: 'Already answered or invalid option' });
+			throw new ConflictException('Already answered or invalid option');
 		}
 	}
 };

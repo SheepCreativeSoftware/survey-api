@@ -1,10 +1,10 @@
 import type { Handler } from 'express';
+import { ForbiddenException, NotFoundException } from '../../../modules/misc/customErrors';
 import { buntstift } from 'buntstift';
 import { comparePassword } from '../../../modules/protection/hashPassword';
 import { getConnection } from '../../../database/connectDatabase';
 import { RequestBodyParser } from './request';
 import { SelectUserParser } from './selectUser';
-import { statusCode } from '../../../modules/misc/statusCodes';
 import { signJwtToken } from '../../../modules/protection/jwtHandling';
 import { tinyToBoolean } from '../../../database/typecast';
 
@@ -28,10 +28,10 @@ const loginUserHandle = (): Handler => {
 			const userFromDb = SelectUserParser.safeParse(row[0]);
 			if (!userFromDb.success) {
 				buntstift.warn(userFromDb.error.stack || userFromDb.error.message);
-				throw new Error('Not Found', { cause: 'User not found' });
+				throw new NotFoundException('User not found');
 			}
 			if (!userFromDb.data.active) {
-				throw new Error('Forbidden', { cause: 'User accont is disabled' });
+				throw new ForbiddenException('User accont is disabled');
 			}
 
 			const isValidPassword = await comparePassword(
@@ -39,11 +39,11 @@ const loginUserHandle = (): Handler => {
 				userFromDb.data.password,
 			);
 			if (!isValidPassword) {
-				throw new Error('Forbidden', { cause: 'Credentials are wrong' });
+				throw new ForbiddenException('Credentials are wrong');
 			}
 
 			const token = await signJwtToken({ role: 'Creator', userId: userFromDb.data.user_id });
-			res.status(statusCode.okay.statusCode).send({ token });
+			res.status(200).send({ token });
 		} catch (error) {
 			next(error);
 		}

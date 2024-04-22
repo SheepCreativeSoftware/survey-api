@@ -1,5 +1,6 @@
 import type { Handler } from 'express';
 import { verifyJwtToken } from './jwtHandling';
+import { BadRequestException, UnauthorizedException } from '../misc/customErrors';
 
 const jwtAuthorizationHandler = (): Handler => {
 	return async (req, _res, next) => {
@@ -16,7 +17,7 @@ const jwtAuthorizationHandler = (): Handler => {
 
 		const [authType, token] = authHeader.split(' ');
 		if (authType !== 'Bearer') {
-			return next(new Error('Bad Request', { cause: 'Wrong Auth header' }));
+			return next(new BadRequestException('Wrong Auth header'));
 		}
 
 		try {
@@ -26,9 +27,7 @@ const jwtAuthorizationHandler = (): Handler => {
 			next();
 		} catch (error) {
 			if (error instanceof Error) {
-				return next(
-					new Error('Unauthorized', { cause: `Invalid Token: ${error.message}` }),
-				);
+				return next(new UnauthorizedException(`Invalid Token: ${error.message}`));
 			}
 			next(error);
 		}

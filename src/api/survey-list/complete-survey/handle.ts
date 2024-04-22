@@ -1,18 +1,18 @@
 import type { Handler } from 'express';
 import type { UUID } from 'node:crypto';
+import { NotFoundException, UnauthorizedException } from '../../../modules/misc/customErrors';
+import { buntstift } from 'buntstift';
+import { getConnection } from '../../../database/connectDatabase';
 import { RequestBodyParser } from './request';
 import { restoreSurvey } from '../../../domain/survey';
-import { getConnection } from '../../../database/connectDatabase';
-import { tinyToBoolean } from '../../../database/typecast';
 import { SelectSurveyParser } from './sqlOutputValidation';
-import { buntstift } from 'buntstift';
-import { statusCode } from '../../../modules/misc/statusCodes';
+import { tinyToBoolean } from '../../../database/typecast';
 
 const completeSurveyHandler = (): Handler => {
 	return async (req, res, next) => {
 		try {
 			if (req.user?.role === 'Answerer' || typeof req.user?.userId === 'undefined') {
-				throw new Error('Unauthorized', { cause: 'User is not logged in' });
+				throw new UnauthorizedException('User is not logged in');
 			}
 
 			const { userId } = req.user;
@@ -27,13 +27,14 @@ const completeSurveyHandler = (): Handler => {
 						created, end_date as 'endDate', completed
 						FROM survey
 						WHERE survey_id = ?
-						AND user_id = ?`,
+						AND user_id = ?
+						AND completed = false`,
 				},
 				[requestBody.surveyId, userId],
 			);
 
 			if (response.length === 0) {
-				throw new Error('Not Found');
+				throw new NotFoundException();
 			}
 
 			const dataFromDb = SelectSurveyParser.safeParse(response);
@@ -63,7 +64,7 @@ const completeSurveyHandler = (): Handler => {
 				[survey.isCompleted(), survey.getSurveyId()],
 			);
 
-			res.status(statusCode.okay.statusCode).send();
+			res.status(200).send();
 		} catch (error) {
 			next(error);
 		}

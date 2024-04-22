@@ -1,9 +1,9 @@
 import express from 'express';
-import { openSurveysHandler } from './open-surveys/handle';
-import { completedSurveysHandler } from './completed-surveys/handle';
-import { createSurveyHandler } from './create-survey/handle';
-import { completeSurveyHandler } from './complete-survey/handle';
 import { adjustSurveyHandler } from './adjust-survey/handle';
+import { completedSurveysHandler } from './completed-surveys/handle';
+import { completeSurveyHandler } from './complete-survey/handle';
+import { createSurveyHandler } from './create-survey/handle';
+import { openSurveysHandler } from './open-surveys/handle';
 
 const router = express.Router();
 
